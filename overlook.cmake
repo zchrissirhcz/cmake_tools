@@ -396,6 +396,13 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   endif()
 endif()
 
+# 31. 所有的控件路径(if/else)必须都有返回值
+# NDK21 Clang 默认报error
+if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
+  overlook_list_append(OVERLOOK_C_FLAGS /we4715)
+  overlook_list_append(OVERLOOK_CXX_FLAGS /we4715)
+endif()
+
 # 将上述定制的FLAGS追加到CMAKE默认的编译选项中
 # 为什么是添加而不是直接设定呢？因为toolchain（比如android的）会加料
 if (USE_OVERLOOK_FLAGS)
