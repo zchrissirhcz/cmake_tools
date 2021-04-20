@@ -1,12 +1,9 @@
 cmake_minimum_required(VERSION 3.15)
 
-project(testcase31)
-
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-include("../overlook.cmake")
+project(demo)
 
-add_executable(testcase31
+add_executable(testcaseX
   ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
 )
-
