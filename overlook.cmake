@@ -397,7 +397,7 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 # 31. 所有的控件路径(if/else)必须都有返回值
-# NDK21 Clang 默认报error
+# NDK21 Clang / Linux Clang/GCC/G++ 默认都报 error
 if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
   overlook_list_append(OVERLOOK_C_FLAGS /we4715)
   overlook_list_append(OVERLOOK_CXX_FLAGS /we4715)
