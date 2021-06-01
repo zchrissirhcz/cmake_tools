@@ -403,6 +403,19 @@ if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
   overlook_list_append(OVERLOOK_CXX_FLAGS /we4715)
 endif()
 
+# 32. multi-char constant
+# MSVC 没有对应的选项
+if(CMAKE_C_COMPILER_ID MATCHES "GNU")
+  overlook_list_append(OVERLOOK_C_FLAGS -Werror=multichar)
+  overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=multichar)
+elseif(CMAKE_C_COMPILER_ID MATCHES "Clang")
+  overlook_list_append(OVERLOOK_C_FLAGS -Werror=multichar)
+  overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=multichar)
+endif()
+
+
+
+
 # 将上述定制的FLAGS追加到CMAKE默认的编译选项中
 # 为什么是添加而不是直接设定呢？因为toolchain（比如android的）会加料
 if (USE_OVERLOOK_FLAGS)
