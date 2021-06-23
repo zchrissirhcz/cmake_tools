@@ -12,6 +12,7 @@ In [overlook.cmake](overlook.cmake), I put together **32 serious compilation war
 
 ## Usage
 
+### CMake way
 Just add oneline into your `CMakeLists.txt`:
 
 ```cmake
@@ -30,3 +31,7 @@ include("cmake/overlook.cmake") # Add this line
 
 add_executable(hello hello.cpp)
 ```
+
+### Makefile way
+
+Go to [makefiles](makefiles/README.md) directory for details.
