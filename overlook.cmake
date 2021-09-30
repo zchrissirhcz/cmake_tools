@@ -413,7 +413,11 @@ elseif(CMAKE_C_COMPILER_ID MATCHES "Clang")
   overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=multichar)
 endif()
 
-
+# 33. 用 memset 等 C 函数设置 非POD class 对象
+# linux下，GCC9.3能发现此问题，但clang10不能发现
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+  overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=class-memaccess)
+endif()
 
 
 # 将上述定制的FLAGS追加到CMAKE默认的编译选项中
