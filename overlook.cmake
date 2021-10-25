@@ -1,4 +1,13 @@
 #################################################
+# overlook: the missing linter for C/C++
+#
+# author:   ChrisZZ
+# email:    imzhuo@foxmail.com
+# license:  MIT
+#################################################
+
+
+#################################################
 #
 # Useful funtions
 #
