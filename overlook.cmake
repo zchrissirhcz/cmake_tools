@@ -80,7 +80,7 @@ endfunction()
 option(USE_OVERLOOK_FLAGS "use safe compilation flags?" ON)
 option(OVERLOOK_STRICT_FLAGS "strict c/c++ flags checking?" OFF)
 option(USE_CPPCHECK "use cppcheck for static checkingg?" OFF)
-option(OVERLOOK_VERBOSE "verbose output?" OFF)
+option(OVERLOOK_VERBOSE "verbose output?" ON)
 
 #################################################
 #
@@ -434,6 +434,18 @@ endif()
 if (USE_OVERLOOK_FLAGS)
   overlook_list_append(CMAKE_C_FLAGS "${OVERLOOK_C_FLAGS}")
   overlook_list_append(CMAKE_CXX_FLAGS "${OVERLOOK_CXX_FLAGS}")
+
+  overlook_list_append(CMAKE_C_FLAGS_DEBUG "${OVERLOOK_C_FLAGS}")
+  overlook_list_append(CMAKE_CXX_FLAGS_DEBUG "${OVERLOOK_CXX_FLAGS}")
+
+  overlook_list_append(CMAKE_C_FLAGS_RELEASE "${OVERLOOK_C_FLAGS}")
+  overlook_list_append(CMAKE_CXX_FLAGS_RELEASE "${OVERLOOK_CXX_FLAGS}")
+
+  overlook_list_append(CMAKE_C_FLAGS_MINSIZEREL "${OVERLOOK_C_FLAGS}")
+  overlook_list_append(CMAKE_CXX_FLAGS_MINSIZEREL "${OVERLOOK_CXX_FLAGS}")
+  
+  overlook_list_append(CMAKE_C_FLAGS_RELWITHDEBINFO "${OVERLOOK_C_FLAGS}")
+  overlook_list_append(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${OVERLOOK_CXX_FLAGS}")
 endif()
 
 if (OVERLOOK_VERBOSE)
