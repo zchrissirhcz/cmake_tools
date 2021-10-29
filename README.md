@@ -59,8 +59,17 @@ option(USE_CPPCHECK "use cppcheck for static checkingg?" OFF)
 option(OVERLOOK_VERBOSE "verbose output?" ON)
 ```
 
+
 ## What about Makefile?
 
 Go to [makefiles](makefiles/README.md) directory for details.
 
+
+## What about Visual Studio?
+
+You can generate Visual Studio Solution (.sln) via either:
+- cmake command line: cmake -G "Visual Studio 16 2019" -A x64 /path/to/CMakeLists.txt
+- cmake-gui
+
+You may also directly open an cmake-based C/C++ project via VS2019.
 
