@@ -453,27 +453,44 @@ if (OVERLOOK_VERBOSE)
   message(STATUS "--- OVERLOOK_CXX_FLAGS are: ${OVERLOOK_CXX_FLAGS}")
 endif()
 
-#################################################
-#
+
+####################################################################
 # Add whole archive when build static library
-#
-#################################################
-function (overlook_add_whole_archive_flag lib output_var)
-  #message(FATAL_ERROR "=== linker is: ${ANDROID_LD}")
-  if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
-    message(STATUS "not supported yet")
-  elseif(CMAKE_C_COMPILER_ID MATCHES "Clang" AND NOT ANDROID)
+# Usage:
+#   overlook_add_whole_archive_flag(<lib> <output_var>)
+# Example:
+#   add_library(foo foo.hpp foo.cpp)
+#   add_executable(bar bar.cpp)
+#   overlook_add_whole_archive_flag(foo safe_foo)
+#   target_link_libraries(bar ${safe_foo})
+####################################################################
+function(overlook_add_whole_archive_flag lib output_var)
+  if("${CMAKE_CXX_COMPILER_ID}" MATCHES "MSVC")
+    if(MSVC_VERSION GREATER 1900)
+      set(${output_var} -WHOLEARCHIVE:$<TARGET_FILE:${lib}> PARENT_SCOPE)
+    else()
+      message(WARNING "MSVC version is ${MSVC_VERSION}, /WHOLEARCHIVE flag cannot be set")
+      set(${output_var} ${lib} PARENT_SCOPE)
+    endif()
+  elseif("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
+    set(${output_var} -Wl,--whole-archive ${lib} -Wl,--no-whole-archive PARENT_SCOPE)
+  elseif("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND CMAKE_SYSTEM_NAME MATCHES "Linux")
+    set(${output_var} -Wl,--whole-archive ${lib} -Wl,--no-whole-archive PARENT_SCOPE)
+  elseif ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND NOT ANDROID)
     set(${output_var} -Wl,-force_load ${lib} PARENT_SCOPE)
-  else()
+  elseif(ANDROID)
     #即使是NDK21并且手动传入ANDROID_LD=lld，依然要用ld的查重复符号的链接选项
     set(${output_var} -Wl,--whole-archive ${lib} -Wl,--no-whole-archive PARENT_SCOPE)
+  else()
+    message(FATAL_ERROR ">>> add_whole_archive_flag not supported yet for current compiler: ${CMAKE_CXX_COMPILER_ID}")
   endif()
 endfunction()
+
 
 #################################################
 #
 # cppcheck，开启静态代码检查，主要是检查编译器检测不到的UB
-#   注：目前只有终端下能看到对应输出，其中NDK下仅第一次输出
+#   注: 目前只有终端下能看到对应输出，其中NDK下仅第一次输出
 #
 #################################################
 if(USE_CPPCHECK)
