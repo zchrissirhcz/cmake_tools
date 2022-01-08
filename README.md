@@ -2,26 +2,38 @@
 
 <img alt="GitHub" src="https://img.shields.io/github/license/zchrissirhcz/overlook">
 
-OverLook: reporting serious C/C++ compilation warnings in advance with cmake.
+OverLook: save your time(life) via reporting serious C/C++ compilation warnings in advance with CMake.
 
 ## Intro
 
-Good programmers should not ignore warnings. Treating all warnings as errors, however, is not pratical (due to time cost, not affect compute result, etc). Here comes the contradiction: which warnings should be considered carefully?
+Good programmers should not ignore warnings. Treating all warnings as errors, however, is not practical (due to time cost, not affect compute result, etc). Here comes the contradiction: which warnings should be considered carefully?
 
-In [overlook.cmake](overlook.cmake), I put together **33 serious compilation warnings' checking** (treated as error), many of which come from pratical project experience, and does resolve severe bugs, including segfaults caused by address truncation, memory leaks caused by missing including header file, trap caused by missing return value, etc. These severe bugs can not be inspected by famous tools like AddressSanitizer, Valgrind, VLD, but [overlook.cmake](overlook.cmake) can.
+In [overlook.cmake](overlook.cmake), I collect **33 serious compilation warnings' checking, treat corresponding C/C++ flags as error**. Many of them come from practical project experience, and does resolve severe bugs, including segfaults caused by address truncation, memory leaks caused by missing including header file, trap caused by missing return value, etc. These severe bugs can not be inspected by famous tools like AddressSanitizer, Valgrind, VLD, but [overlook.cmake](overlook.cmake) can.
 
 ## Getting started
 
 ```bash
+# Get it!
 git clone https://github.com/zchrissirhcz/overlook
 
+# Copy to own project
 cp overlook/overlook.cmake /path/to/your/cmake-based-project/
 ```
 
-then insert one line in your `CMakeLists.txt`:
-
+**Globally with overlook flags**
 ```cmake
 include("overlook.cmake")
+```
+
+**Per-target with overlook flags**
+```cmake
+set(OVERLOOK_FLAGS_GLOBAL OFF)
+include("overlook.cmake")
+target_compile_options(your_target_name
+    PRIVATE # or PUBLIC
+    ${OVERLOOK_CXX_FLAGS} # for C++
+    # ${OVERLOOK_C_FLAGS} for C
+)
 ```
 
 **A simple full example**
