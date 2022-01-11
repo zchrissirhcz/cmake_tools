@@ -428,6 +428,13 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
   overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=class-memaccess)
 endif()
 
+## 34. 括号里面是单个等号而不是双等号
+# linux下， Clang14 可以发现问题，但GCC9.3无法发现；android clang可以发现
+if(CMAKE_C_COMPILER_ID MATCHES "Clang")
+  overlook_list_append(OVERLOOK_C_FLAGS -Werror=parentheses)
+  overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=parentheses)
+endif()
+
 
 # 将上述定制的FLAGS追加到CMAKE默认的编译选项中
 # 为什么是添加而不是直接设定呢？因为toolchain（比如android的）会加料

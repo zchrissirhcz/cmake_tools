@@ -8,7 +8,7 @@ OverLook: save your time(life) via reporting serious C/C++ compilation warnings 
 
 Good programmers should not ignore warnings. Treating all warnings as errors, however, is not practical (due to time cost, not affect compute result, etc). Here comes the contradiction: which warnings should be considered carefully?
 
-In [overlook.cmake](overlook.cmake), I collect **33 serious compilation warnings' checking, treat corresponding C/C++ flags as error**. Many of them come from practical project experience, and does resolve severe bugs, including segfaults caused by address truncation, memory leaks caused by missing including header file, trap caused by missing return value, etc. These severe bugs can not be inspected by famous tools like AddressSanitizer, Valgrind, VLD, but [overlook.cmake](overlook.cmake) can.
+In [overlook.cmake](overlook.cmake), I collect **34 serious compilation warnings' checking, treat corresponding C/C++ flags as error**. Many of them come from practical project experience, and does resolve severe bugs, including segfaults caused by address truncation, memory leaks caused by missing including header file, trap caused by missing return value, etc. These severe bugs can not be inspected by famous tools like AddressSanitizer, Valgrind, VLD, but [overlook.cmake](overlook.cmake) can.
 
 ## Getting started
 
