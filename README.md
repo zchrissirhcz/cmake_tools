@@ -1,6 +1,7 @@
 # OverLook
 
-<img alt="GitHub" src="https://img.shields.io/github/license/zchrissirhcz/overlook">
+<img alt="GitHub" src="https://img.shields.io/github/license/zchrissirhcz/overlook"> ![Ubuntu](https://img.shields.io/badge/Ubuntu-333333?style=flat&logo=ubuntu) ![Windows](https://img.shields.io/badge/Windows-333333?style=flat&logo=windows&logoColor=blue) ![macOS](https://img.shields.io/badge/-macOS-333333?style=flat&logo=apple) ![android](https://img.shields.io/badge/-Android-333333?style=flat&logo=Android)
+
 
 OverLook: Amplify warnings that shouldn't be ignored.
 
