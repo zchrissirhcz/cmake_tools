@@ -1,5 +1,5 @@
 #################################################
-# overlook: the missing linter for C/C++
+# OverLook: Amplify warnings that shouldn't be ignored.
 #
 # author:   ChrisZZ
 # email:    imzhuo@foxmail.com
@@ -33,7 +33,7 @@ function(overlook_add_executable)
     foreach(_source IN ITEMS ${ARGN})
       assign_source_group(${_source})
     endforeach()
-    #message("${ARGV}\n")
+    #message("${ARGV}")
   endif ()
   add_executable(${ARGV})
 endfunction(overlook_add_executable)
@@ -43,7 +43,7 @@ function(overlook_cuda_add_executable)
     foreach(_source IN ITEMS ${ARGN})
       assign_source_group(${_source})
     endforeach()
-    #message("${ARGV}\n")
+    #message("${ARGV}")
   endif ()
   cuda_add_executable(${ARGV})
 endfunction(overlook_cuda_add_executable)
@@ -53,7 +53,7 @@ function(overlook_add_library)
     foreach(_source IN ITEMS ${ARGN})
       assign_source_group(${_source})
     endforeach()
-    #message("${ARGV}\n")
+    #message("${ARGV}")
   endif ()
   add_library(${ARGV})
 endfunction(overlook_add_library)
@@ -63,12 +63,12 @@ function(overlook_cuda_add_library)
     foreach(_source IN ITEMS ${ARGN})
       assign_source_group(${_source})
     endforeach()
-    #message("${ARGV}\n")
+    #message("${ARGV}")
   endif ()
   cuda_add_library(${ARGV})
 endfunction(overlook_cuda_add_library)
 
-# append element to list with space as seperator 
+# append element to list with space as seperator
 function(overlook_list_append __string __element)
   # set(__list ${${__string}})
   # set(__list "${__list} ${__element}")
@@ -79,7 +79,7 @@ endfunction()
 
 option(OVERLOOK_FLAGS_GLOBAL "use safe compilation flags?" ON)
 option(OVERLOOK_STRICT_FLAGS "strict c/c++ flags checking?" OFF)
-option(USE_CPPCHECK "use cppcheck for static checkingg?" OFF)
+option(USE_CPPCHECK "use cppcheck for static checking?" OFF)
 option(OVERLOOK_VERBOSE "verbose output?" OFF)
 
 #################################################
@@ -450,7 +450,7 @@ if (OVERLOOK_FLAGS_GLOBAL)
 
   overlook_list_append(CMAKE_C_FLAGS_MINSIZEREL "${OVERLOOK_C_FLAGS}")
   overlook_list_append(CMAKE_CXX_FLAGS_MINSIZEREL "${OVERLOOK_CXX_FLAGS}")
-  
+
   overlook_list_append(CMAKE_C_FLAGS_RELWITHDEBINFO "${OVERLOOK_C_FLAGS}")
   overlook_list_append(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${OVERLOOK_CXX_FLAGS}")
 endif()

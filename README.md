@@ -2,30 +2,22 @@
 
 <img alt="GitHub" src="https://img.shields.io/github/license/zchrissirhcz/overlook">
 
-OverLook: save your time(life) via reporting serious C/C++ compilation warnings in advance with CMake.
+OverLook: Amplify warnings that shouldn't be ignored.
 
-## Intro
+## Introduction
 
 Good programmers should not ignore warnings. Treating all warnings as errors, however, is not practical (due to time cost, not affect compute result, etc). Here comes the contradiction: which warnings should be considered carefully?
 
 In [overlook.cmake](overlook.cmake), I collect **34 serious compilation warnings' checking, treat corresponding C/C++ flags as error**. Many of them come from practical project experience, and does resolve severe bugs, including segfaults caused by address truncation, memory leaks caused by missing including header file, trap caused by missing return value, etc. These severe bugs can not be inspected by famous tools like AddressSanitizer, Valgrind, VLD, but [overlook.cmake](overlook.cmake) can.
 
-## Getting started
+## Usage
 
-```bash
-# Get it!
-git clone https://github.com/zchrissirhcz/overlook
-
-# Copy to own project
-cp overlook/overlook.cmake /path/to/your/cmake-based-project/
-```
-
-**Globally with overlook flags**
+**Globally**
 ```cmake
 include("overlook.cmake")
 ```
 
-**Per-target with overlook flags**
+**Or, Per-target**
 ```cmake
 set(OVERLOOK_FLAGS_GLOBAL OFF)
 include("overlook.cmake")
@@ -36,14 +28,14 @@ target_compile_options(your_target_name
 )
 ```
 
-**A simple full example**
-```cmake
-cmake_minimum_required(VERSION 3.15)
-project(hello)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-include("cmake/overlook.cmake") # Add this line
-add_executable(hello hello.cpp)
-```
+
+## ♥️ Thanks
+
+If you like this project, welcome Star!
+
+
+[![Stargazers over time](https://starchart.cc/zchrissirhcz/overlook.svg)](https://starchart.cc/zchrissirhcz/overlook)
+
 
 ## Advanced Usage
 
@@ -67,7 +59,6 @@ You may override the following options's:
 ```cmake
 option(OVERLOOK_FLAGS_GLOBAL "use safe compilation flags?" ON)
 option(OVERLOOK_STRICT_FLAGS "strict c/c++ flags checking?" OFF)
-option(USE_CPPCHECK "use cppcheck for static checkingg?" OFF)
 option(OVERLOOK_VERBOSE "verbose output?" OFF)
 ```
 
@@ -80,7 +71,7 @@ Go to [makefiles](makefiles/README.md) directory for details.
 ## What about Visual Studio?
 
 You can generate Visual Studio Solution (.sln) via either:
-- cmake command line: cmake -G "Visual Studio 16 2019" -A x64 /path/to/CMakeLists.txt
+- cmake command line: `cmake -G "Visual Studio 16 2019" -A x64 /path/to/CMakeLists.txt`
 - cmake-gui
 
 You may also directly open an cmake-based C/C++ project via VS2019.
