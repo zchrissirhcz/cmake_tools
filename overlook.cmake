@@ -1,18 +1,25 @@
-#################################################
-# OverLook: Amplify warnings that shouldn't be ignored.
+###############################################################
 #
-# author:   ChrisZZ
-# email:    imzhuo@foxmail.com
-# license:  MIT
-#################################################
+# OverLook: Amplify C/C++ warnings that shouldn't be ignored.
+#
+# Author:   Zhuo Zhang <imzhuo@foxmail.com>
+# Homepage: https://github.com/zchrissirhcz/overlook
+#
+###############################################################
 
+cmake_minimum_required(VERSION 3.1)
 
-#################################################
+# Only included once
+if(OVERLOOK_INCLUDE_GUARD)
+  return()
+endif()
+set(OVERLOOK_INCLUDE_GUARD TRUE)
+
+###############################################################
 #
 # Useful funtions
 #
-#################################################
-cmake_minimum_required(VERSION 3.1)
+###############################################################
 
 # --[ correctly show folder structure in Visual Studio
 function(assign_source_group)
@@ -82,11 +89,11 @@ option(OVERLOOK_STRICT_FLAGS "strict c/c++ flags checking?" OFF)
 option(USE_CPPCHECK "use cppcheck for static checking?" OFF)
 option(OVERLOOK_VERBOSE "verbose output?" OFF)
 
-#################################################
+###############################################################
 #
 # Important CFLAGS/CXXFLAGS
 #
-#################################################
+###############################################################
 
 set(OVERLOOK_C_FLAGS "")
 set(OVERLOOK_CXX_FLAGS "")
@@ -105,6 +112,25 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
   # if(CMAKE_CXX_COMPILER_VERSION GREATER 9.1) # when >= 9.2, not support this option
   #   message(STATUS "---- DEBUG INFO HERE !!!")
   # endif()
+endif()
+
+if(CMAKE_C_COMPILER_ID)
+  set(OVERLOOK_WITH_C TRUE)
+else()
+  set(OVERLOOK_WITH_C FALSE)
+endif()
+
+if(CMAKE_CXX_COMPILER_ID)
+  set(OVERLOOK_WITH_CXX TRUE)
+else()
+  set(OVERLOOK_WITH_CXX FALSE)
+endif()
+
+# Project LANGUAGE not including C and CXX so we return
+if((NOT OVERLOOK_WITH_C) AND (NOT OVERLOOK_WITH_CXX))
+  message("OverLook WARNING: neither C nor CXX compilers available. No OVERLOOK C/C++ flags will be set")
+  message("  NOTE: You many consider add C and CXX in `project()` command")
+  return()
 endif()
 
 # 1. 函数没有声明就使用
@@ -459,7 +485,7 @@ if (OVERLOOK_VERBOSE)
 endif()
 
 
-####################################################################
+##################################################################################
 # Add whole archive when build static library
 # Usage:
 #   overlook_add_whole_archive_flag(<lib> <output_var>)
@@ -468,7 +494,7 @@ endif()
 #   add_executable(bar bar.cpp)
 #   overlook_add_whole_archive_flag(foo safe_foo)
 #   target_link_libraries(bar ${safe_foo})
-####################################################################
+##################################################################################
 function(overlook_add_whole_archive_flag lib output_var)
   if("${CMAKE_CXX_COMPILER_ID}" MATCHES "MSVC")
     if(MSVC_VERSION GREATER 1900)
@@ -492,12 +518,12 @@ function(overlook_add_whole_archive_flag lib output_var)
 endfunction()
 
 
-#################################################
+###############################################################
 #
 # cppcheck，开启静态代码检查，主要是检查编译器检测不到的UB
 #   注: 目前只有终端下能看到对应输出，其中NDK下仅第一次输出
 #
-#################################################
+###############################################################
 if(USE_CPPCHECK)
   find_program(CMAKE_CXX_CPPCHECK NAMES cppcheck)
   if (CMAKE_CXX_CPPCHECK)
@@ -514,11 +540,11 @@ if(USE_CPPCHECK)
 endif()
 
 
-#################################################
+###############################################################
 #
 # Platform determinations
 #
-#################################################
+###############################################################
 if (CMAKE_SYSTEM_NAME MATCHES "Windows")
   set(OVERLOOK_SYSTEM "Windows")
 elseif (ANDROID)
@@ -534,11 +560,11 @@ if (OVERLOOK_VERBOSE)
   message(STATUS "----- OVERLOOK_SYSTEM: ${OVERLOOK_SYSTEM}")
 endif()
 
-#################################################
+###############################################################
 #
 # Architecture determinations
 #
-#################################################
+###############################################################
 if((IOS AND CMAKE_OSX_ARCHITECTURES MATCHES "arm") #没匹配ARM
   OR (CMAKE_SYSTEM_PROCESSOR MATCHES "^(arm|Arm|ARM|aarch64|AAarch64|AARCH64)"))
   set(OVERLOOK_ARCH arm)
@@ -557,11 +583,11 @@ if (OVERLOOK_VERBOSE)
   message(STATUS "----- OVERLOOK_ARCH: ${OVERLOOK_ARCH}")
 endif()
 
-#################################################
+###############################################################
 #
 # ABI determinations
 #
-#################################################
+###############################################################
 if (ANDROID)
   set(OVERLOOK_ABI ${ANDROID_ABI})
 elseif (OVERLOOK_ARCH STREQUAL x86)
@@ -588,11 +614,11 @@ if (OVERLOOK_VERBOSE)
   message(STATUS "----- OVERLOOK_ABI: ${OVERLOOK_ABI}")
 endif()
 
-#################################################
+###############################################################
 #
 # Visual Studio stuffs: vs_version, vc_version
 #
-#################################################
+###############################################################
 if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
   if(MSVC_VERSION EQUAL 1600)
     set(vs_version vs2010)
