@@ -87,7 +87,7 @@ function(overlook_list_append __string __element)
 endfunction()
 
 option(OVERLOOK_FLAGS_GLOBAL "use safe compilation flags?" ON)
-option(OVERLOOK_STRICT_FLAGS "strict c/c++ flags checking?" OFF)
+option(OVERLOOK_STRICT_FLAGS "strict c/c++ flags checking?" ON)
 option(USE_CPPCHECK "use cppcheck for static checking?" OFF)
 option(OVERLOOK_VERBOSE "verbose output?" OFF)
 
@@ -461,6 +461,14 @@ if(CMAKE_C_COMPILER_ID MATCHES "Clang")
   overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=parentheses)
 endif()
 
+## 35. double 型转 float 型，可能有精度丢失（尤其在 float 较大时）
+# MSVC 默认是放在 /W3
+if(OVERLOOK_STRICT_FLAGS)
+  if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
+    overlook_list_append(OVERLOOK_C_FLAGS /we4244)
+    overlook_list_append(OVERLOOK_CXX_FLAGS /we4244)
+  endif()
+endif()
 
 # 将上述定制的FLAGS追加到CMAKE默认的编译选项中
 # 为什么是添加而不是直接设定呢？因为toolchain（比如android的）会加料
