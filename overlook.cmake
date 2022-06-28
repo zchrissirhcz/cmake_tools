@@ -470,6 +470,18 @@ if(OVERLOOK_STRICT_FLAGS)
   endif()
 endif()
 
+## 36. 父类有virtual的成员函数，但析构函数是public并且不是virtual，会导致UB
+# https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#c35-a-base-class-destructor-should-be-either-public-and-virtual-or-protected-and-non-virtual
+# -Wnon-virtual-dtor (C++ and Objective-C++ only)
+# Warn when a class has virtual functions and an accessible non-virtual destructor itself or in an accessible polymorphic base
+# class, in which case it is possible but unsafe to delete an instance of a derived class through a pointer to the class
+# itself or base class.  This warning is automatically enabled if -Weffc++ is specified.
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+  overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=non-virtual-dtor)
+elseif(CMAKE_C_COMPILER_ID MATCHES "Clang")
+  overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=non-virtual-dtor)
+endif()
+
 # 将上述定制的FLAGS追加到CMAKE默认的编译选项中
 # 为什么是添加而不是直接设定呢？因为toolchain（比如android的）会加料
 if (OVERLOOK_FLAGS_GLOBAL)

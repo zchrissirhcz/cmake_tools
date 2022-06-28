@@ -12,9 +12,14 @@ Good programmers should not ignore warnings. Treating all warnings as errors, ho
 - not own scratch project, too much to modify
 - not affect result
 
+Moreover on the GCC/Clang common flags:
+- `-Wall` does not mean `turn on all warnings`, missing flags like `-Wnon-virtual-dtor`
+- `-Wpedantic` check more flags that `-Wall`, but still missing flags like `-Wnon-virtual-dtor`
+- `-Weffc++` may cover more flags
+
 Here comes the contradiction: which warnings should be considered carefully?
 
-In [overlook.cmake](overlook.cmake), there are **35 serious compilation warnings' checking, treat corresponding C/C++ flags as error**, with corresponding unit tests (See [tests](tests)). Most are extracted from practical cross-platform projects, and does resolve severe bugs such as:
+In [overlook.cmake](overlook.cmake), there are **36 serious compilation warnings' checking, treat corresponding C/C++ flags as error**, with corresponding unit tests (See [tests](tests)). Most are extracted from practical cross-platform projects, and does resolve severe bugs such as:
 - Segmentation Faults(caused by address truncation)
 - Memory leaks(caused by missing including header file)
 - Trap(caused by missing return value)
@@ -87,3 +92,5 @@ You can generate Visual Studio Solution (.sln) via either:
 
 You may also directly open an cmake-based C/C++ project via VS2019.
 
+## References
+- https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines
