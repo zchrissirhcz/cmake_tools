@@ -42,7 +42,7 @@ int main() {
 
     Entity* p = new SubEntity;
     p->hello();
-    delete p; // 实际上，如果开启了 clangd， 例如 VSCode + clangd 插件， 会直接提示为下划波浪线
+    delete p; // 实际上，如果(在Linux）开启了 clangd， 例如 VSCode + clangd 插件， 会直接提示为下划波浪线
 
 
     return 0;
