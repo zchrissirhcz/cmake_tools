@@ -176,7 +176,7 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 # 4. 函数应该有返回值但没有return返回值;或不是所有路径都有返回值
-# 解决bug：lane detect; vpdt for循环无法跳出(android输出trap)
+# 解决bug：lane detect; vpdt for循环无法跳出(android输出trap); -O3时输出内容和其他优化等级不一样（from 三老师）
 if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
   overlook_list_append(OVERLOOK_C_FLAGS /we4716 /we4715)
   overlook_list_append(OVERLOOK_CXX_FLAGS /we4716 /we4715)
