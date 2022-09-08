@@ -15,7 +15,7 @@ if(OVERLOOK_INCLUDE_GUARD)
 endif()
 set(OVERLOOK_INCLUDE_GUARD TRUE)
 
-set(OVERLOOK_VERSION "2022.04.30")
+set(OVERLOOK_VERSION "2022.09.08")
 
 ###############################################################
 #
