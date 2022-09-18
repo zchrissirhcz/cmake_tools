@@ -94,3 +94,4 @@ You may also directly open an cmake-based C/C++ project via VS2019.
 
 ## References
 - https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines
+- https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html
