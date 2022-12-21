@@ -15,7 +15,7 @@ if(OVERLOOK_INCLUDE_GUARD)
 endif()
 set(OVERLOOK_INCLUDE_GUARD TRUE)
 
-set(OVERLOOK_VERSION "2022.09.18")
+set(OVERLOOK_VERSION "2022.12.21")
 
 option(OVERLOOK_FLAGS_GLOBAL "use safe compilation flags?" ON)
 option(OVERLOOK_STRICT_FLAGS "strict c/c++ flags checking?" ON)
@@ -127,12 +127,14 @@ endif()
 
 # Rule 5. 避免使用影子(shadow)变量
 # 有时候会误伤，例如eigen等开源项目，可以手动关掉
+if(0)
 if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
   overlook_list_append(OVERLOOK_C_FLAGS /we6244 /we6246 /we4457 /we4456)
   overlook_list_append(OVERLOOK_CXX_FLAGS /we6244 /we6246 /we4457 /we4456)
 else()
   overlook_list_append(OVERLOOK_C_FLAGS -Werror=shadow)
   overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=shadow)
+endif()
 endif()
 
 # Rule 6. 函数不应该返回局部变量的地址
@@ -148,6 +150,7 @@ elseif(CMAKE_C_COMPILER_ID MATCHES "Clang")
 endif()
 
 # Rule 7. 变量没初始化就使用，要避免
+if(0)
 if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
   overlook_list_append(OVERLOOK_C_FLAGS "/we4700 /we26495")
   overlook_list_append(OVERLOOK_CXX_FLAGS "/we4700 /we26495")
@@ -155,14 +158,17 @@ else()
   overlook_list_append(OVERLOOK_C_FLAGS -Werror=uninitialized)
   overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=uninitialized)
 endif()
+endif()
 
 # Rule 8. printf 等语句中的格式串和实参类型不匹配，要避免
+if(0)
 if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
   overlook_list_append(OVERLOOK_C_FLAGS /we4477)
   overlook_list_append(OVERLOOK_CXX_FLAGS /we4477)
 else()
   overlook_list_append(OVERLOOK_C_FLAGS -Werror=format)
   overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=format)
+endif()
 endif()
 
 # Rule 9. 避免把 unsigned int 和 int 直接比较
@@ -391,7 +397,9 @@ endif()
 # Rule 33. 用 memset 等 C 函数设置 非 POD class 对象
 # Linux下，GCC9.3 能发现此问题，但clang10 不能发现
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-  overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=class-memaccess)
+  if(CMAKE_CXX_COMPILER_VERSION GREATER 7.5)
+    overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=class-memaccess)
+  endif()
 endif()
 
 ## Rule 34. 括号里面是单个等号而不是双等号
