@@ -7,6 +7,11 @@ OverLook: Amplify warnings that shouldn't be ignored.
 
 ## Introduction
 
+[overlook.cmake](overlook.cmake) selects C/C++ warnings that are easy to ignore but are serious, and advances detection and reporting to compile time by treating them as errors. It helps people write safer code, avoiding abnormal results that can be compiled and linked but run.
+
+
+## Purpose
+
 Good programmers should not ignore warnings. Treating all warnings as errors, however, is not practical due to reasons:
 - time cost
 - not own scratch project, too much to modify
