@@ -15,7 +15,7 @@ if(OVERLOOK_INCLUDE_GUARD)
 endif()
 set(OVERLOOK_INCLUDE_GUARD TRUE)
 
-set(OVERLOOK_VERSION "2022.12.21")
+set(OVERLOOK_VERSION "2023.02.07")
 
 option(OVERLOOK_FLAGS_GLOBAL "use safe compilation flags?" ON)
 option(OVERLOOK_STRICT_FLAGS "strict c/c++ flags checking?" ON)
@@ -34,7 +34,13 @@ function(overlook_list_append __string __element)
   set(${__string} "${${__string}} ${__element}" PARENT_SCOPE)
 endfunction()
 
-# 0. 检查编译器版本。同一编译器的不同版本，编译选项的支持情况可能不同。
+message(STATUS "------------------------------------------------------------")
+message(STATUS "  Using overlook, the CMake plugin for safer C/C++ code")
+message(STATUS "  Author: Zhuo Zhang (imzhuo@foxmail.com)")
+message(STATUS "  OVERLOOK_VERSION: ${OVERLOOK_VERSION}")
+message(STATUS "------------------------------------------------------------")
+
+# 检查编译器版本。同一编译器的不同版本，编译选项的支持情况可能不同。
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND CLANG_VERSION_STRING)
   message(STATUS "--- CLANG_VERSION_MAJOR is: ${CLANG_VERSION_MAJOR}")
   message(STATUS "--- CLANG_VERSION_MINOR is: ${CLANG_VERSION_MINOR}")
