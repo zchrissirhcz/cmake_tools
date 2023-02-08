@@ -43,9 +43,9 @@ message(STATUS "------------------------------------------------------------")
 
 # If `-w` specified for GCC/Clang, report an error
 if((CMAKE_C_COMPILER_ID MATCHES "GNU") OR (CMAKE_C_COMPILER_ID MATCHES "Clang"))
-  get_directory_property(overlook_detected_global_options COMPILE_OPTIONS)
-  message(STATUS "Overlook Detected Global Compile Options: ${overlook_detected_global_options}")
-  string(REGEX MATCH "-w" ignore_all_warnings "${overlook_detected_global_options}" )
+  get_directory_property(overlook_detected_global_compile_options COMPILE_OPTIONS)
+  message(STATUS "Overlook Detected Global Compile Options: ${overlook_detected_global_compile_options}")
+  string(REGEX MATCH "-w" ignore_all_warnings "${overlook_detected_global_compile_options}" )
   if(ignore_all_warnings)
     message(FATAL_ERROR "!! You have `-w` compile option specified, which mean ignore all warnings, thus Overlook won't work.\n!! Please remove it (in `add_compile_options)`!")
   endif()
