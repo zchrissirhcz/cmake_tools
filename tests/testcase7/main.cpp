@@ -1,18 +1,20 @@
 #include <stdio.h>
 
-int main() {
+int main()
+{
     int data;
 
-    if (data>10) {
+    if (data > 10)
+    {
         printf("data > 10\n");
-    } else {
+    }
+    else
+    {
         printf("data <= 10\n");
     }
-
 
     int* ptr;
     printf("*ptr = %d\n", *ptr);
 
     return 0;
 }
-

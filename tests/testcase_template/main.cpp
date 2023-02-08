@@ -1,7 +1,7 @@
 #include <stdio.h>
 
-int main() {
+int main()
+{
     printf("hello cmake\n");
     return 0;
 }
-

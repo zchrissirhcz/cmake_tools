@@ -2,11 +2,12 @@
 
 // C4075.cpp
 // compile with: /W1
-#pragma init_seg("mysegg")   // C4075
+#pragma init_seg("mysegg") // C4075
 
 // try..
 // #pragma init_seg(user)
 
-int main() {
+int main()
+{
     return 0;
 }

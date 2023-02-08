@@ -35,7 +35,7 @@ These severe bugs can not be inspected by famous tools like AddressSanitizer, Va
 
 **Globally**
 ```cmake
-include("overlook.cmake")
+include("overlook.cmake")  # ! Put this line in the end of your Root CMakeLists.txt
 ```
 
 **Or, Per-target**
@@ -83,6 +83,11 @@ option(OVERLOOK_STRICT_FLAGS "strict c/c++ flags checking?" OFF)
 option(OVERLOOK_VERBOSE "verbose output?" OFF)
 ```
 
+## Debugging
+If you're using Overlook, but it seems not work, possible cases:
+1. The overlook.cmake you are using is not the latest.
+2. Overlook's rules are suppressed due to your `add_definitions(-w)`, which ignore all warnings thus overlook won't work.
+3. Your compiler is not covered by Overlook. If so, text me or create an issue.
 
 ## What about Makefile?
 

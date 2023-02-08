@@ -2,7 +2,8 @@
 
 int print_data(int* data, int len)
 {
-    for (int i=0; i<len; i++) {
+    for (int i = 0; i < len; i++)
+    {
         printf("%d ", data[i]);
     }
     printf("\n");
@@ -11,7 +12,8 @@ int print_data(int* data, int len)
 void example1()
 {
     int data[10];
-    for(int i=0; i<10; i++) {
+    for (int i = 0; i < 10; i++)
+    {
         data[i] = i;
     }
     int res = print_data(data, 10);
@@ -19,29 +21,26 @@ void example1()
     printf("res=%d\n", res);
 }
 
-
 //---------------------
 
-int func1( int i )
+int func1(int i)
 {
-   if( i )
-   return 3;  // C4715 warning, nothing returned if i == 0
+    if (i)
+        return 3; // C4715 warning, nothing returned if i == 0
 }
-
 
 void fatal()
 {
 }
 int glue()
 {
-   if(0)
-      return 1;
-   else if(0)
-      return 0;
-   else
-      fatal();   // C4715
+    if (0)
+        return 1;
+    else if (0)
+        return 0;
+    else
+        fatal(); // C4715
 }
-
 
 void example2()
 {
@@ -50,10 +49,10 @@ void example2()
     printf("%d\n", qaq);
 }
 
-
 //-----------------------------
 
-int main() {
+int main()
+{
     example1();
     example2();
 

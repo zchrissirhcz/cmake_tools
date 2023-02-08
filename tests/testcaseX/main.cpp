@@ -7,15 +7,23 @@ using namespace std;
 class A
 {
 public:
-    A() { cout << "new object" << endl; }
-    ~A() { cout << "delete object" << endl; }
+    A()
+    {
+        cout << "new object" << endl;
+    }
+    ~A()
+    {
+        cout << "delete object" << endl;
+    }
 };
 
-A&& func() {
+A&& func()
+{
     return move(A());
 }
 
-int main() {
+int main()
+{
     A&& a = func();
     cout << "function end" << endl;
     return 0;

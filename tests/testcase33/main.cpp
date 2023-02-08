@@ -9,7 +9,8 @@ class SmartPhone
     std::string name;
 };
 
-int main() {
+int main()
+{
     printf("hello cmake\n");
 
     SmartPhone* sp = (SmartPhone*)malloc(sizeof(SmartPhone));
@@ -17,4 +18,3 @@ int main() {
 
     return 0;
 }
-

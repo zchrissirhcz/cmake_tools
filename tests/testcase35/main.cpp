@@ -6,7 +6,6 @@ int main()
     float b = a;
     printf("a = %lf\n", a);
     printf("b = %f\n", b);
-    
+
     return 0;
 }
-

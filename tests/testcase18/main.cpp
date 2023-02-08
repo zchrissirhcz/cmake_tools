@@ -1,7 +1,8 @@
 #include "hello.h"
 #include <stdio.h>
 
-int main() {
+int main()
+{
     hello(NULL);
     hello("Chris");
 

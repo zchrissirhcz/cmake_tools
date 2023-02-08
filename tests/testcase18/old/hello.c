@@ -4,9 +4,12 @@
 
 void hello(const char* name)
 {
-    if (name==NULL) {
+    if (name == NULL)
+    {
         printf("hello world\n");
-    } else {
+    }
+    else
+    {
         printf("hello, %s\n", name);
     }
 }

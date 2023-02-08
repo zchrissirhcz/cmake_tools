@@ -3,10 +3,12 @@
 class Entity
 {
 public:
-    Entity() {
+    Entity()
+    {
         printf("Entity ctor()\n");
     }
-    ~Entity() {
+    ~Entity()
+    {
         printf("Entity dtor()\n");
     }
 
@@ -33,8 +35,8 @@ public:
     }
 };
 
-
-int main() {
+int main()
+{
     printf("hello cmake\n");
 
     // SubEntity entity;
@@ -44,7 +46,5 @@ int main() {
     p->hello();
     delete p; // 实际上，如果(在Linux）开启了 clangd， 例如 VSCode + clangd 插件， 会直接提示为下划波浪线
 
-
     return 0;
 }
-

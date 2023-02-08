@@ -1,6 +1,7 @@
 #include <stdio.h>
 
-int main() {
+int main()
+{
     printf("hello cmake\n");
 
     int* data = (int*)malloc(100 * sizeof(int)); // missing #include <stdlib.h>
@@ -8,4 +9,3 @@ int main() {
 
     return 0;
 }
-
