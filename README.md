@@ -54,8 +54,7 @@ target_compile_options(your_target_name
 
 If you like this project, welcome Star!
 
-
-[![Stargazers over time](https://starchart.cc/zchrissirhcz/overlook.svg)](https://starchart.cc/zchrissirhcz/overlook)
+[![Star History Chart](https://api.star-history.com/svg?repos=zchrissirhcz/overlook&type=Date)](https://star-history.com/#zchrissirhcz/overlook&Date)
 
 
 ## Advanced Usage
