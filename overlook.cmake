@@ -34,11 +34,22 @@ function(overlook_list_append __string __element)
   set(${__string} "${${__string}} ${__element}" PARENT_SCOPE)
 endfunction()
 
+# Print overlook information
 message(STATUS "------------------------------------------------------------")
 message(STATUS "  Using overlook, the CMake plugin for safer C/C++ code")
 message(STATUS "  Author: Zhuo Zhang (imzhuo@foxmail.com)")
 message(STATUS "  OVERLOOK_VERSION: ${OVERLOOK_VERSION}")
 message(STATUS "------------------------------------------------------------")
+
+# If `-w` specified for GCC/Clang, report an error
+if((CMAKE_C_COMPILER_ID MATCHES "GNU") OR (CMAKE_C_COMPILER_ID MATCHES "Clang"))
+  get_directory_property(overlook_detected_global_options COMPILE_OPTIONS)
+  message(STATUS "Overlook Detected Global Compile Options: ${overlook_detected_global_options}")
+  string(REGEX MATCH "-w" ignore_all_warnings "${overlook_detected_global_options}" )
+  if(ignore_all_warnings)
+    message(FATAL_ERROR "!! You have `-w` compile option specified, which mean ignore all warnings, thus Overlook won't work.\n!! Please remove it (in `add_compile_options)`!")
+  endif()
+endif()
 
 # 检查编译器版本。同一编译器的不同版本，编译选项的支持情况可能不同。
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND CLANG_VERSION_STRING)
