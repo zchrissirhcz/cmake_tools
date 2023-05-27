@@ -249,10 +249,11 @@ endif()
 
 # Rule 16. Windows下，源码已经是 UTF-8 编码，但输出中文到 stdout 时
 # 要么编译报错，要么乱码。解决办法是编译输出为 GBK 格式
-if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
-  overlook_list_append(OVERLOOK_C_FLAGS "/source-charset:utf-8 /execution-charset:gbk")
-  overlook_list_append(OVERLOOK_CXX_FLAGS "/source-charset:utf-8 /execution-charset:gbk")
-endif()
+# Replaced by https://github.com:zchrissirhcz/cmake_examples/tree/main/tools/windows_encoding.cmake
+# if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
+#   overlook_list_append(OVERLOOK_C_FLAGS "/source-charset:utf-8 /execution-charset:gbk")
+#   overlook_list_append(OVERLOOK_CXX_FLAGS "/source-charset:utf-8 /execution-charset:gbk")
+# endif()
 
 # Rule 17. 释放非堆内存
 # TODO: 检查 MSVC
