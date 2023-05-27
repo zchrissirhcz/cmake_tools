@@ -20,3 +20,8 @@ __pycache__/
 
 #clangd cache
 **/.cache/
+
+# JetBrains IDEs
+.idea/
+cmake-build-debug/
+cmake-build-debug-event-trace/
