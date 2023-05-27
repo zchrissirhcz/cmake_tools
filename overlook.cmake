@@ -47,7 +47,7 @@ if((CMAKE_C_COMPILER_ID MATCHES "GNU") OR (CMAKE_C_COMPILER_ID MATCHES "Clang"))
   message(STATUS "Overlook Detected Global Compile Options: ${overlook_detected_global_compile_options}")
   string(REGEX MATCH "-w" ignore_all_warnings "${overlook_detected_global_compile_options}" )
   if(ignore_all_warnings)
-    message(FATAL_ERROR "!! You have `-w` compile option specified, which mean ignore all warnings, thus Overlook won't work.\n!! Please remove it (in `add_compile_options)`!")
+    message(FATAL_ERROR "Overlook won't working due to `-w` found in compile options. Consider remove it (in `add_compile_options)`")
   endif()
 endif()
 
@@ -57,13 +57,6 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND CLANG_VERSION_STRING)
   message(STATUS "--- CLANG_VERSION_MINOR is: ${CLANG_VERSION_MINOR}")
   message(STATUS "--- CLANG_VERSION_PATCHLEVEL is: ${CLANG_VERSION_PATCHLEVEL}")
   message(STATUS "--- CLANG_VERSION_STRING is: ${CLANG_VERSION_STRING}")
-endif()
-
-if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-  message(STATUS "--- CMAKE_CXX_COMPILER_VERSION is: ${CMAKE_CXX_COMPILER_VERSION}")
-  # if(CMAKE_CXX_COMPILER_VERSION GREATER 9.1) # when >= 9.2, not support this option
-  #   message(STATUS "---- DEBUG INFO HERE !!!")
-  # endif()
 endif()
 
 if(CMAKE_C_COMPILER_ID)
@@ -452,18 +445,6 @@ endif()
 if(OVERLOOK_FLAGS_GLOBAL)
   overlook_list_append(CMAKE_C_FLAGS "${OVERLOOK_C_FLAGS}")
   overlook_list_append(CMAKE_CXX_FLAGS "${OVERLOOK_CXX_FLAGS}")
-
-  overlook_list_append(CMAKE_C_FLAGS_DEBUG "${OVERLOOK_C_FLAGS}")
-  overlook_list_append(CMAKE_CXX_FLAGS_DEBUG "${OVERLOOK_CXX_FLAGS}")
-
-  overlook_list_append(CMAKE_C_FLAGS_RELEASE "${OVERLOOK_C_FLAGS}")
-  overlook_list_append(CMAKE_CXX_FLAGS_RELEASE "${OVERLOOK_CXX_FLAGS}")
-
-  overlook_list_append(CMAKE_C_FLAGS_MINSIZEREL "${OVERLOOK_C_FLAGS}")
-  overlook_list_append(CMAKE_CXX_FLAGS_MINSIZEREL "${OVERLOOK_CXX_FLAGS}")
-
-  overlook_list_append(CMAKE_C_FLAGS_RELWITHDEBINFO "${OVERLOOK_C_FLAGS}")
-  overlook_list_append(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${OVERLOOK_CXX_FLAGS}")
 endif()
 
 if(OVERLOOK_VERBOSE)
@@ -508,7 +489,7 @@ endfunction()
 ###############################################################
 #
 # cppcheck，开启静态代码检查，主要是检查编译器检测不到的UB
-#   注: 目前只有终端下能看到对应输出，其中NDK下仅第一次输出
+#   注: 目前只有终端下能看到对应输出，其中 NDK 下仅第一次输出
 #
 ###############################################################
 if(OVERLOOK_USE_CPPCHECK)
