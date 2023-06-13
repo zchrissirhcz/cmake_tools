@@ -1,14 +1,11 @@
-// C4003.cpp
-// compile with: /WX
-#define test(a, b) (a + b)
+// C4006.cpp
+// compile with: /W1
+#undef // C4006
+
+// try..
+// #undef TEST
 
 int main()
 {
-    int a = 1;
-    int b = 2;
-    a = test(b); // C4003
-    // try..
-    a = test(a, b);
-
     return 0;
 }

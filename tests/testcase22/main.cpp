@@ -1,20 +1,14 @@
-#include <stdio.h>
+// C4129.cpp
+// compile with: /W1
 
-// C4312.cpp
-// compile by using: cl /W1 /LD C4312.cpp
-void* f(int i)
-{
-    return (void*)i; // C4312 for 64-bit targets
-}
-
-void* f2(long long i)
-{
-    return (void*)i; // OK
-}
+#include <iostream>
 
 int main()
 {
-    int* data = (int*)f(10);
+    //char array1[] = "\/709";   // C4129
+    char array2[] = "\n709"; // OK
+
+    std::cout << "Default arguments: 1 I:\datasets\ADAS\adas_pcbt_test_20190403\images\list_imgtxt" << std::endl;
 
     return 0;
 }

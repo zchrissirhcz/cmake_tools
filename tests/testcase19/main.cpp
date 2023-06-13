@@ -1,10 +1,13 @@
-#include <iostream>
-using namespace std;
+//https://docs.microsoft.com/en-us/cpp/error-messages/compiler-warnings/compiler-warning-level-1-c4075?view=msvc-160
 
-#define TEST "test1"
-#define TEST "test2" // C4005 delete or rename to resolve the warning
+// C4075.cpp
+// compile with: /W1
+#pragma init_seg("mysegg") // C4075
+
+// try..
+// #pragma init_seg(user)
 
 int main()
 {
-    cout << TEST << endl;
+    return 0;
 }

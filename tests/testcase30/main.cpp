@@ -1,28 +1,27 @@
 #include <stdio.h>
 
-void hello(char* data)
+int reflect101_clip(int ti, int size)
 {
-    if (data)
+    if (ti < 0)
     {
-        printf("%s\n", data);
+        return -ti;
     }
-    else
+    else if (ti > size - 1)
     {
-        printf("hello world\n");
+        return 2 * size - 2 - ti; // size-1 - (ti-(size-1))  =>  size - 1 - (ti - size + 1) => size - 1 - ti + size - 1 => 2*size - 2 - ti
     }
+    // 这里忘记 ti 在正常范围的情况下的返回值
+    //else {
+    //    return ti;
+    //}
 }
 
 int main()
 {
-    char* data1 = "hello cmake";
-    int size1 = sizeof(data1);
-    printf("sizeof(data1)=%d\n", size1); // 输出的是sizeof(char*)的长度
-    hello(data1);                        // 能正常执行并且输出 "hello cmake"，但若hello函数内要用sizeof(data1)，容易出错
-
-    char data2[] = { "hello cmake" };
-    int size2 = sizeof(data2);
-    printf("sizeof(data2)=%d\n", size2); // 输出的是sizeof(data2)的长度，包括了\0在内
-    hello(data2);                        // 能正常执行并且输出 "hello cmake"，而若hello函数内要用sizeof(data2)，则能算对
-
+    printf("hello cmake\n");
+    int ti = 20;
+    int size = 100;
+    int new_ti = reflect101_clip(20, size);
+    printf("ti=%d, reflect101_clip(ti,%d)=%d\n", ti, size, new_ti);
     return 0;
 }

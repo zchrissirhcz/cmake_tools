@@ -1,49 +1,20 @@
-#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <string>
 
-class Array
+class SmartPhone
 {
-public:
-    Array(int _len)
-        : len(_len)
-    {
-        data = new double[len];
-        for (int i = 0; i < len; i++)
-        {
-            data[i] = 0;
-            printf("data[%d]=%f\n", i, data[i]);
-        }
-    }
-
-    friend std::ostream& operator<<(std::ostream& os, const Array& arr);
-
-public:
-    int len;
-    double* data;
+    int price;
+    std::string name;
 };
-
-std::ostream& operator<<(std::ostream& os, const Array& arr)
-{
-    for (int i = 0; i < arr.len; i++)
-    {
-        if (i > 0)
-        {
-            os << ', '; // 这里，导致输出的值，从第二个开始，原本是0而输出不为0
-        }
-        os << arr.data[i] << '\n';
-    }
-    os << '\n';
-    return os;
-}
-
-void test_array()
-{
-    Array arr(4);
-    std::cout << arr << std::endl;
-}
 
 int main()
 {
-    test_array();
+    printf("hello cmake\n");
+
+    SmartPhone* sp = (SmartPhone*)malloc(sizeof(SmartPhone));
+    memset(sp, 0, sizeof(*sp));
 
     return 0;
 }

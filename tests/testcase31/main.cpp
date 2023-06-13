@@ -1,27 +1,49 @@
-#include <stdio.h>
+#include <iostream>
 
-int reflect101_clip(int ti, int size)
+class Array
 {
-    if (ti < 0)
+public:
+    Array(int _len)
+        : len(_len)
     {
-        return -ti;
+        data = new double[len];
+        for (int i = 0; i < len; i++)
+        {
+            data[i] = 0;
+            printf("data[%d]=%f\n", i, data[i]);
+        }
     }
-    else if (ti > size - 1)
+
+    friend std::ostream& operator<<(std::ostream& os, const Array& arr);
+
+public:
+    int len;
+    double* data;
+};
+
+std::ostream& operator<<(std::ostream& os, const Array& arr)
+{
+    for (int i = 0; i < arr.len; i++)
     {
-        return 2 * size - 2 - ti; // size-1 - (ti-(size-1))  =>  size - 1 - (ti - size + 1) => size - 1 - ti + size - 1 => 2*size - 2 - ti
+        if (i > 0)
+        {
+            os << ', '; // 这里，导致输出的值，从第二个开始，原本是0而输出不为0
+        }
+        os << arr.data[i] << '\n';
     }
-    // 这里忘记 ti 在正常范围的情况下的返回值
-    //else {
-    //    return ti;
-    //}
+    os << '\n';
+    return os;
+}
+
+void test_array()
+{
+    Array arr(4);
+    std::cout << arr << std::endl;
 }
 
 int main()
 {
-    printf("hello cmake\n");
-    int ti = 20;
-    int size = 100;
-    int new_ti = reflect101_clip(20, size);
-    printf("ti=%d, reflect101_clip(ti,%d)=%d\n", ti, size, new_ti);
+    test_array();
+
     return 0;
 }

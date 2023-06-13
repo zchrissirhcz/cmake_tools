@@ -1,26 +1,20 @@
-// C4267.cpp
-// compile by using: cl /W4 C4267.cpp
-
 #include <stdio.h>
 
-void Func1(short)
+// C4312.cpp
+// compile by using: cl /W1 /LD C4312.cpp
+void* f(int i)
 {
+    return (void*)i; // C4312 for 64-bit targets
 }
-void Func2(int)
+
+void* f2(long long i)
 {
-}
-void Func3(long)
-{
-}
-void Func4(size_t)
-{
+    return (void*)i; // OK
 }
 
 int main()
 {
-    size_t bufferSize = 10;
-    Func1(bufferSize); // C4267 for all platforms
-    Func2(bufferSize); // C4267 only for 64-bit platforms
-    Func3(bufferSize); // C4267 only for 64-bit platforms
-    Func4(bufferSize); // OK for all platforms
+    int* data = (int*)f(10);
+
+    return 0;
 }

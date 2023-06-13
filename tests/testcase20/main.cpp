@@ -1,13 +1,26 @@
-//https://docs.microsoft.com/en-us/cpp/error-messages/compiler-warnings/compiler-warning-level-1-c4075?view=msvc-160
+// C4267.cpp
+// compile by using: cl /W4 C4267.cpp
 
-// C4075.cpp
-// compile with: /W1
-#pragma init_seg("mysegg") // C4075
+#include <stdio.h>
 
-// try..
-// #pragma init_seg(user)
+void Func1(short)
+{
+}
+void Func2(int)
+{
+}
+void Func3(long)
+{
+}
+void Func4(size_t)
+{
+}
 
 int main()
 {
-    return 0;
+    size_t bufferSize = 10;
+    Func1(bufferSize); // C4267 for all platforms
+    Func2(bufferSize); // C4267 only for 64-bit platforms
+    Func3(bufferSize); // C4267 only for 64-bit platforms
+    Func4(bufferSize); // OK for all platforms
 }

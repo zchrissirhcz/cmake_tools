@@ -1,7 +1,14 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 int main()
 {
-    printf("这是一段中文\n");
+    int data[5];
+    for (int i = 0; i < 5; i++)
+    {
+        data[i] = i;
+    }
+    free(data);
+
     return 0;
 }

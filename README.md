@@ -78,7 +78,7 @@ For example, you would like to treat "shadowed variable" warning as warning, ins
 You may override the following options's:
 ```cmake
 option(OVERLOOK_FLAGS_GLOBAL "use safe compilation flags?" ON)
-option(OVERLOOK_STRICT_FLAGS "strict c/c++ flags checking?" OFF)
+option(OVERLOOK_USE_STRICT_FLAGS "strict c/c++ flags checking?" OFF)
 option(OVERLOOK_VERBOSE "verbose output?" OFF)
 ```
 

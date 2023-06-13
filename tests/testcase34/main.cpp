@@ -2,20 +2,10 @@
 
 int main()
 {
-    int a = 3;
-
-    if (a == 1)
-    {
-        printf("1\n");
-    }
-    else if (a = 2) // people careless write this, if not notice linter (e.g. Intellisense, Clangd), this only lead to compile warn for first time compile, later no warning
-    {
-        printf("2\n");
-    }
-    else if (a == 3)
-    {
-        printf("3\n");
-    }
+    double a = 123.456;
+    float b = a;
+    printf("a = %lf\n", a);
+    printf("b = %f\n", b);
 
     return 0;
 }

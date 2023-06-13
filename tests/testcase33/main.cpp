@@ -1,20 +1,21 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <string>
-
-class SmartPhone
-{
-    int price;
-    std::string name;
-};
 
 int main()
 {
-    printf("hello cmake\n");
+    int a = 3;
 
-    SmartPhone* sp = (SmartPhone*)malloc(sizeof(SmartPhone));
-    memset(sp, 0, sizeof(*sp));
+    if (a == 1)
+    {
+        printf("1\n");
+    }
+    else if (a = 2) // people careless write this, if not notice linter (e.g. Intellisense, Clangd), this only lead to compile warn for first time compile, later no warning
+    {
+        printf("2\n");
+    }
+    else if (a == 3)
+    {
+        printf("3\n");
+    }
 
     return 0;
 }
