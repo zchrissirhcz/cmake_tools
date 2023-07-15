@@ -126,7 +126,7 @@ else()
 endif()
 
 # Rule 1. 函数没有声明就使用
-# 解决bug：地址截断；内存泄漏
+# 解决bug: 地址截断; 内存泄漏
 if(OVERLOOK_ENABLE_RULE1)
   if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
     overlook_list_append(OVERLOOK_C_FLAGS /we4013)
@@ -159,7 +159,7 @@ if(OVERLOOK_ENABLE_RULE2)
 endif()
 
 # Rule 3. 指针类型不兼容
-# 解决bug：crash或结果异常
+# 解决bug: crash或结果异常
 if(OVERLOOK_ENABLE_RULE3)
   if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
     overlook_list_append(OVERLOOK_C_FLAGS /we4133)
@@ -178,8 +178,8 @@ if(OVERLOOK_ENABLE_RULE3)
 endif()
 
 # Rule 4. 函数应该有返回值但没有 return 返回值;或不是所有路径都有返回值
-# 解决bug：lane detect; vpdt for循环无法跳出(android输出trap); lane calib库读取到随机值导致获取非法格式asvl，开asan则表现为读取NULL指针
-# -O3时输出内容和其他优化等级不一样（from 三老师）
+# 解决bug: lane detect; vpdt for循环无法跳出(android输出trap); lane calib库读取到随机值导致获取非法格式asvl, 开asan则表现为读取NULL指针
+# -O3时输出内容和其他优化等级不一样 (from 三老师)
 if(OVERLOOK_ENABLE_RULE4)
   if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
     overlook_list_append(OVERLOOK_C_FLAGS /we4716 /we4715)
@@ -191,7 +191,7 @@ if(OVERLOOK_ENABLE_RULE4)
 endif()
 
 # Rule 5. 避免使用影子(shadow)变量
-# 有时候会误伤，例如eigen等开源项目，可以手动关掉
+# 有时候会误伤, 例如eigen等开源项目, 可以手动关掉
 if(OVERLOOK_ENABLE_RULE5)
   if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
     overlook_list_append(OVERLOOK_C_FLAGS /we6244 /we6246 /we4457 /we4456)
@@ -282,14 +282,14 @@ if(OVERLOOK_ENABLE_RULE11)
   endif()
 endif()
 
-# Rule 12. 函数声明中的参数列表和定义中不一样。在 MSVC C 下为警告，Linux Clang 下报错
+# Rule 12. 函数声明中的参数列表和定义中不一样。在 MSVC C 下为警告, Linux Clang 下报错
 if(OVERLOOK_ENABLE_RULE12)
   if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
     overlook_list_append(OVERLOOK_C_FLAGS /we4029)
   endif()
 endif()
 
-# Rule 13. 实参太多，比函数定义或声明中的要多。只在MSVC C 下为警告，Linux Clang下报错
+# Rule 13. 实参太多, 比函数定义或声明中的要多。只在MSVC C 下为警告, Linux Clang下报错
 if(OVERLOOK_ENABLE_RULE13)
   if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
     overlook_list_append(OVERLOOK_C_FLAGS /we4020)
@@ -297,8 +297,8 @@ if(OVERLOOK_ENABLE_RULE13)
 endif()
 
 # 14. 避免 void* 类型的指针参参与算术运算
-# MSVC C/C++ 默认会报错，Linux gcc 不报 warning 和 error，Linux g++ 只报 warning
-# Linux 下 Clang 开 -Wpedentric 才报 warning，Clang++ 报 error
+# MSVC C/C++ 默认会报错, Linux gcc 不报 warning 和 error, Linux g++ 只报 warning
+# Linux 下 Clang 开 -Wpedentric 才报 warning, Clang++ 报 error
 if(OVERLOOK_ENABLE_RULE14)
   if(CMAKE_C_COMPILER_ID MATCHES "GNU")
     overlook_list_append(OVERLOOK_C_FLAGS -Werror=pointer-arith)
@@ -346,7 +346,7 @@ if(OVERLOOK_ENABLE_RULE18)
   endif()
 endif()
 
-# Rule 19. pragma init_seg 指定了非法（不能识别的）section名字
+# Rule 19. pragma init_seg 指定了非法(不能识别的)section名字
 # VC++ 特有。Linux 下的 gcc/clang 没有
 if(OVERLOOK_ENABLE_RULE19)
   if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
@@ -497,7 +497,7 @@ if(OVERLOOK_ENABLE_RULE31)
 endif()
 
 # Rule 32. 用 memset 等 C 函数设置 非 POD class 对象
-# Linux下，GCC9.3 能发现此问题，但clang10 不能发现
+# Linux下, GCC9.3 能发现此问题, 但clang10 不能发现
 if(OVERLOOK_ENABLE_RULE32)
   if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
     if(CMAKE_CXX_COMPILER_VERSION GREATER 7.5)
@@ -507,7 +507,7 @@ if(OVERLOOK_ENABLE_RULE32)
 endif()
 
 ## Rule 33. 括号里面是单个等号而不是双等号
-# Linux下， Clang14 可以发现问题，但 GCC9.3 无法发现；android clang 可以发现
+# Linux Clang14 可以发现问题，但 GCC9.3 无法发现; android clang 可以发现
 if(OVERLOOK_ENABLE_RULE33)
   if(CMAKE_C_COMPILER_ID MATCHES "Clang")
     overlook_list_append(OVERLOOK_C_FLAGS -Werror=parentheses)
@@ -524,7 +524,7 @@ if(OVERLOOK_ENABLE_RULE34)
   endif()
 endif()
 
-## Rule 35. 父类有 virtual 的成员函数，但析构函数是 public 并且不是 virtual，会导致 UB
+## Rule 35. 父类有 virtual 的成员函数，但析构函数是 public 并且不是 virtual, 会导致 UB
 # https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#c35-a-base-class-destructor-should-be-either-public-and-virtual-or-protected-and-non-virtual
 # -Wnon-virtual-dtor (C++ and Objective-C++ only)
 # Warn when a class has virtual functions and an accessible non-virtual destructor itself or in an accessible polymorphic base
@@ -539,7 +539,7 @@ if(OVERLOOK_ENABLE_RULE35)
 endif()
 
 # 将上述定制的 FLAGS 追加到 CMAKE 默认的编译选项中
-# 为什么是添加而不是直接设定呢？因为 xxx-toolchain.cmake 中可能会设置一些默认值 (如 Android NDK)， 需要避免这些默认值被覆盖
+# 为什么是添加而不是直接设定呢？因为 xxx-toolchain.cmake 中可能会设置一些默认值 (如 Android NDK), 需要避免这些默认值被覆盖
 if(OVERLOOK_FLAGS_GLOBAL)
   overlook_list_append(CMAKE_C_FLAGS "${OVERLOOK_C_FLAGS}")
   overlook_list_append(CMAKE_CXX_FLAGS "${OVERLOOK_CXX_FLAGS}")
@@ -576,7 +576,7 @@ function(overlook_add_whole_archive_flag lib output_var)
   elseif("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND NOT ANDROID)
     set(${output_var} -Wl,-force_load ${lib} PARENT_SCOPE)
   elseif(ANDROID)
-    #即使是 NDK21 并且手动传入 ANDROID_LD=lld，依然要用ld的查重复符号的链接选项
+    # 即使是 NDK21 并且手动传入 ANDROID_LD=lld, 依然要用ld的查重复符号的链接选项
     set(${output_var} -Wl,--whole-archive ${lib} -Wl,--no-whole-archive PARENT_SCOPE)
   else()
     message(FATAL_ERROR ">>> add_whole_archive_flag not supported yet for current compiler: ${CMAKE_CXX_COMPILER_ID}")
@@ -586,7 +586,7 @@ endfunction()
 
 ###############################################################
 #
-# cppcheck，开启静态代码检查，主要是检查编译器检测不到的UB
+# cppcheck, 开启静态代码检查, 主要是检查编译器检测不到的UB
 #   注: 目前只有终端下能看到对应输出，其中 NDK 下仅第一次输出
 #
 ###############################################################
