@@ -38,6 +38,7 @@ endfunction()
 message(STATUS "------------------------------------------------------------")
 message(STATUS "  Using overlook, the CMake plugin for safer C/C++ code")
 message(STATUS "  Author: Zhuo Zhang (imzhuo@foxmail.com)")
+message(STATUS "  Homepage: https://github.com/zchrissirhcz/overlook")
 message(STATUS "  OVERLOOK_VERSION: ${OVERLOOK_VERSION}")
 message(STATUS "------------------------------------------------------------")
 
