@@ -17,7 +17,7 @@ Good programmers should not ignore warnings. Treating all warnings as errors, ho
 - not own scratch project, too much to modify
 - not affect result
 
-Moreover on the GCC/Clang common flags:
+Moreover, on the GCC/Clang common flags:
 - `-Wall` does not mean `turn on all warnings`, missing flags like `-Wnon-virtual-dtor`
 - `-Wpedantic` check more flags that `-Wall`, but still missing flags like `-Wnon-virtual-dtor`
 - `-Weffc++` may cover more flags
@@ -75,7 +75,7 @@ For example, you would like to treat "shadowed variable" warning as warning, ins
 ```
 
 **Options**
-You may override the following options's:
+You may override the following options:
 ```cmake
 option(OVERLOOK_FLAGS_GLOBAL "use safe compilation flags?" ON)
 option(OVERLOOK_USE_STRICT_FLAGS "strict c/c++ flags checking?" OFF)

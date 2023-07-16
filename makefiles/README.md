@@ -4,7 +4,7 @@
 
 Create a hello-world cmake project with overlook.cmake and `-DOVERLOOK_VERBOSE` passed:
 
-```
+```bash
 mkdir build
 cd build
 cmake ../.. -DOVERLOOK_VERBOSE=ON
@@ -14,7 +14,7 @@ Then, copy-and-paste the printed overlook c flags and cxx flags, put into new cr
 
 ## Use overlook-xxx.mk
 
-In your makefile, include correspoinding overlook-xxx.mk file:
+In your makefile, include corresponding overlook-xxx.mk file:
 ```makefile
 include overlook-linux-x64-clang.mk
 ```
