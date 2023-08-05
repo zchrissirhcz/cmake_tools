@@ -1,5 +1,10 @@
 #include <stdio.h>
 
+int hello()
+{
+    return 233;
+}
+
 int print_data(int* data, int len)
 {
     for (int i = 0; i < len; i++)
@@ -7,7 +12,8 @@ int print_data(int* data, int len)
         printf("%d ", data[i]);
     }
     printf("\n");
-    return 233;
+    // here the return statement is missing, the compiler will generate an UB
+    hello();
 }
 
 void example1()
