@@ -15,7 +15,7 @@ if(OVERLOOK_INCLUDE_GUARD)
 endif()
 set(OVERLOOK_INCLUDE_GUARD TRUE)
 
-set(OVERLOOK_VERSION "2023.08.05")
+set(OVERLOOK_VERSION "2023.08.06")
 
 option(OVERLOOK_FLAGS_GLOBAL "use safe compilation flags?" ON)
 option(OVERLOOK_USE_STRICT_FLAGS "strict c/c++ flags checking?" ON)
@@ -42,7 +42,7 @@ message(STATUS "  Homepage: https://github.com/zchrissirhcz/overlook")
 message(STATUS "  OVERLOOK_VERSION: ${OVERLOOK_VERSION}")
 message(STATUS "------------------------------------------------------------")
 
-# 检查编译器版本。同一编译器的不同版本，编译选项的支持情况可能不同。
+# Different version of same compiler may support different compile options.
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND CLANG_VERSION_STRING)
   message(STATUS "--- CLANG_VERSION_MAJOR is: ${CLANG_VERSION_MAJOR}")
   message(STATUS "--- CLANG_VERSION_MINOR is: ${CLANG_VERSION_MINOR}")
@@ -127,7 +127,8 @@ if((CMAKE_C_COMPILER_ID MATCHES "GNU") OR (CMAKE_C_COMPILER_ID MATCHES "Clang"))
   endif()
 endif()
 
-# rule1: 函数没有声明就使用, C编译器默认不报错，改为强制报错
+# rule1: calls a function when it is not declared. C compiler doesn't treat it an error, but we do.
+# 函数没有声明就使用, C编译器默认不报错，改为强制报错
 # 解决bug: 地址截断; 内存泄漏
 if(OVERLOOK_ENABLE_RULE1)
   if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
@@ -179,7 +180,9 @@ if(OVERLOOK_ENABLE_RULE3)
   endif()
 endif()
 
-# rule4: 函数应该有返回值但没有 return 返回值，或不是所有路径都有返回值，C编译器默认不报错，改为强制报错
+# rule4: when missing return value for non-void function, C/C++ compiler treat it as UB and not report error, we treat it as error.
+# it may cause crash, or just return un-expected result, depends on the compiler and the code you write
+# 函数应该有返回值但没有 return 返回值，或不是所有路径都有返回值，C和C++编译器默认不报错，改为强制报错
 # 解决bug: lane detect; vpdt for循环无法跳出(android输出trap); lane calib库读取到随机值导致获取非法格式asvl, 开asan则表现为读取NULL指针
 # -O3时输出内容和其他优化等级不一样 (from 三老师)
 if(OVERLOOK_ENABLE_RULE4)
