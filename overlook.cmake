@@ -15,7 +15,7 @@ if(OVERLOOK_INCLUDE_GUARD)
 endif()
 set(OVERLOOK_INCLUDE_GUARD TRUE)
 
-set(OVERLOOK_VERSION "2023.07.15")
+set(OVERLOOK_VERSION "2023.08.05")
 
 option(OVERLOOK_FLAGS_GLOBAL "use safe compilation flags?" ON)
 option(OVERLOOK_USE_STRICT_FLAGS "strict c/c++ flags checking?" ON)
@@ -41,16 +41,6 @@ message(STATUS "  Author: Zhuo Zhang (imzhuo@foxmail.com)")
 message(STATUS "  Homepage: https://github.com/zchrissirhcz/overlook")
 message(STATUS "  OVERLOOK_VERSION: ${OVERLOOK_VERSION}")
 message(STATUS "------------------------------------------------------------")
-
-# If `-w` specified for GCC/Clang, report an error
-if((CMAKE_C_COMPILER_ID MATCHES "GNU") OR (CMAKE_C_COMPILER_ID MATCHES "Clang"))
-  get_directory_property(overlook_detected_global_compile_options COMPILE_OPTIONS)
-  message(STATUS "Overlook Detected Global Compile Options: ${overlook_detected_global_compile_options}")
-  string(REGEX MATCH "-w" ignore_all_warnings "${overlook_detected_global_compile_options}" )
-  if(ignore_all_warnings)
-    message(FATAL_ERROR "Overlook won't working due to `-w` found in compile options. Consider remove it (in `add_compile_options)`")
-  endif()
-endif()
 
 # 检查编译器版本。同一编译器的不同版本，编译选项的支持情况可能不同。
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND CLANG_VERSION_STRING)
@@ -126,7 +116,18 @@ else()
   option(OVERLOOK_ENABLE_RULE34 "enable rule34?"  OFF)
 endif()
 
-# Rule 1. 函数没有声明就使用
+# rule0: don't ignore all that warnings
+# If `-w` specified for GCC/Clang, report an error
+if((CMAKE_C_COMPILER_ID MATCHES "GNU") OR (CMAKE_C_COMPILER_ID MATCHES "Clang"))
+  get_directory_property(overlook_detected_global_compile_options COMPILE_OPTIONS)
+  message(STATUS "Overlook Detected Global Compile Options: ${overlook_detected_global_compile_options}")
+  string(REGEX MATCH "-w" ignore_all_warnings "${overlook_detected_global_compile_options}" )
+  if(ignore_all_warnings)
+    message(FATAL_ERROR "Overlook won't working due to `-w` found in compile options. Consider remove it (in `add_compile_options)`")
+  endif()
+endif()
+
+# rule1: 函数没有声明就使用, C编译器默认不报错，改为强制报错
 # 解决bug: 地址截断; 内存泄漏
 if(OVERLOOK_ENABLE_RULE1)
   if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
@@ -143,7 +144,7 @@ if(OVERLOOK_ENABLE_RULE1)
   endif()
 endif()
 
-# Rule 2. 函数虽然有声明，但是声明不完整，没有写出返回值类型
+# rule2: 函数虽然有声明，但是声明不完整，没有写出返回值类型，C编译器默认不报错，改为强制报错
 if(OVERLOOK_ENABLE_RULE2)
   if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
     overlook_list_append(OVERLOOK_C_FLAGS /we4431)
@@ -159,7 +160,7 @@ if(OVERLOOK_ENABLE_RULE2)
   endif()
 endif()
 
-# Rule 3. 指针类型不兼容
+# rule3: 指针类型不兼容，C编译器默认不报错，改为强制报错
 # 解决bug: crash或结果异常
 if(OVERLOOK_ENABLE_RULE3)
   if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
@@ -178,7 +179,7 @@ if(OVERLOOK_ENABLE_RULE3)
   endif()
 endif()
 
-# Rule 4. 函数应该有返回值但没有 return 返回值;或不是所有路径都有返回值
+# rule4: 函数应该有返回值但没有 return 返回值，或不是所有路径都有返回值，C编译器默认不报错，改为强制报错
 # 解决bug: lane detect; vpdt for循环无法跳出(android输出trap); lane calib库读取到随机值导致获取非法格式asvl, 开asan则表现为读取NULL指针
 # -O3时输出内容和其他优化等级不一样 (from 三老师)
 if(OVERLOOK_ENABLE_RULE4)
@@ -191,7 +192,7 @@ if(OVERLOOK_ENABLE_RULE4)
   endif()
 endif()
 
-# Rule 5. 避免使用影子(shadow)变量
+# rule5: 避免使用影子(shadow)变量
 # 有时候会误伤, 例如eigen等开源项目, 可以手动关掉
 if(OVERLOOK_ENABLE_RULE5)
   if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
@@ -203,7 +204,7 @@ if(OVERLOOK_ENABLE_RULE5)
   endif()
 endif()
 
-# Rule 6. 函数不应该返回局部变量的地址
+# rule6: 函数不应该返回局部变量的地址
 if(OVERLOOK_ENABLE_RULE6)
   if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
     overlook_list_append(OVERLOOK_C_FLAGS /we4172)
@@ -217,7 +218,7 @@ if(OVERLOOK_ENABLE_RULE6)
   endif()
 endif()
 
-# Rule 7. 变量没初始化就使用，要避免
+# rule7: 变量没初始化就使用，要避免
 if(OVERLOOK_ENABLE_RULE7)
   if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
     overlook_list_append(OVERLOOK_C_FLAGS "/we4700 /we26495")
@@ -228,7 +229,7 @@ if(OVERLOOK_ENABLE_RULE7)
   endif()
 endif()
 
-# Rule 8. printf 等语句中的格式串和实参类型不匹配，要避免
+# rule8: printf 等语句中的格式串和实参类型不匹配，要避免
 if(OVERLOOK_ENABLE_RULE8)
   if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
     overlook_list_append(OVERLOOK_C_FLAGS /we4477)
@@ -239,7 +240,7 @@ if(OVERLOOK_ENABLE_RULE8)
   endif()
 endif()
 
-# Rule 9. 避免把 unsigned int 和 int 直接比较
+# rule9: 避免把 unsigned int 和 int 直接比较
 # 通常会误伤，例如 for 循环中。可以考虑关掉
 if(OVERLOOK_ENABLE_RULE9)
   if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
@@ -254,7 +255,7 @@ if(OVERLOOK_ENABLE_RULE9)
   endif()
 endif()
 
-# Rule 10. 避免把 int 指针赋值给 int 类型变量
+# rule10: 避免把 int 指针赋值给 int 类型变量
 if(OVERLOOK_ENABLE_RULE10)
   if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
     overlook_list_append(OVERLOOK_C_FLAGS /we4047)
@@ -272,7 +273,7 @@ if(OVERLOOK_ENABLE_RULE10)
   endif()
 endif()
 
-# Rule 11. 检查数组下标越界访问
+# rule11: 检查数组下标越界访问
 if(OVERLOOK_ENABLE_RULE11)
   if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
     overlook_list_append(OVERLOOK_C_FLAGS "/we6201 /we6386 /we4789")
@@ -283,21 +284,21 @@ if(OVERLOOK_ENABLE_RULE11)
   endif()
 endif()
 
-# Rule 12. 函数声明中的参数列表和定义中不一样。在 MSVC C 下为警告, Linux Clang 下报错
+# rule12: 函数声明中的参数列表和定义中不一样。在 MSVC C 下为警告, Linux Clang 下报错
 if(OVERLOOK_ENABLE_RULE12)
   if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
     overlook_list_append(OVERLOOK_C_FLAGS /we4029)
   endif()
 endif()
 
-# Rule 13. 实参太多, 比函数定义或声明中的要多。只在MSVC C 下为警告, Linux Clang下报错
+# rule13: 实参太多, 比函数定义或声明中的要多。只在MSVC C 下为警告, Linux Clang下报错
 if(OVERLOOK_ENABLE_RULE13)
   if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
     overlook_list_append(OVERLOOK_C_FLAGS /we4020)
   endif()
 endif()
 
-# 14. 避免 void* 类型的指针参参与算术运算
+# rule14: 避免 void* 类型的指针参参与算术运算
 # MSVC C/C++ 默认会报错, Linux gcc 不报 warning 和 error, Linux g++ 只报 warning
 # Linux 下 Clang 开 -Wpedentric 才报 warning, Clang++ 报 error
 if(OVERLOOK_ENABLE_RULE14)
@@ -309,7 +310,7 @@ if(OVERLOOK_ENABLE_RULE14)
   endif()
 endif()
 
-# Rule 15. 避免符号重复定义（变量对应的强弱符号）。只在 C 中出现。
+# rule15: 避免符号重复定义（变量对应的强弱符号）。只在 C 中出现。
 # 暂时没找到 MSVC 的对应编译选项
 if(OVERLOOK_ENABLE_RULE15)
   if(CMAKE_C_COMPILER_ID MATCHES "GNU" OR CMAKE_C_COMPILER_ID MATCHES "Clang")
@@ -317,7 +318,7 @@ if(OVERLOOK_ENABLE_RULE15)
   endif()
 endif()
 
-# Rule 16. 释放非堆内存
+# rule16: 释放非堆内存
 # TODO: 检查 MSVC
 # Linux Clang8.0 无法检测到
 if(OVERLOOK_ENABLE_RULE16)
@@ -327,7 +328,7 @@ if(OVERLOOK_ENABLE_RULE16)
   endif()
 endif()
 
-# Rule 17. 形参与声明不同。场景：静态库(.h/.c)，集成时换库但没换头文件，且函数形参有变化（类型或数量）
+# rule17: 形参与声明不同。场景：静态库(.h/.c)，集成时换库但没换头文件，且函数形参有变化（类型或数量）
 # 只报 warning 不报 error。仅 VS 出现
 if(OVERLOOK_ENABLE_RULE17)
   if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
@@ -335,7 +336,7 @@ if(OVERLOOK_ENABLE_RULE17)
   endif()
 endif()
 
-# Rule 18. 宏定义重复
+# rule18: 宏定义重复
 # gcc5~gcc9 无法检查
 if(OVERLOOK_ENABLE_RULE18)
   if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
@@ -347,7 +348,7 @@ if(OVERLOOK_ENABLE_RULE18)
   endif()
 endif()
 
-# Rule 19. pragma init_seg 指定了非法(不能识别的)section名字
+# rule19: pragma init_seg 指定了非法(不能识别的)section名字
 # VC++ 特有。Linux 下的 gcc/clang 没有
 if(OVERLOOK_ENABLE_RULE19)
   if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
@@ -355,7 +356,7 @@ if(OVERLOOK_ENABLE_RULE19)
   endif()
 endif()
 
-# Rule 20. size_t 类型被转为更窄类型
+# rule20: size_t 类型被转为更窄类型
 # VC/VC++ 特有。 Linux 下的 gcc/clang 没有
 # 有点过于严格了
 if(OVERLOOK_ENABLE_RULE20)
@@ -365,7 +366,7 @@ if(OVERLOOK_ENABLE_RULE20)
   endif()
 endif()
 
-# Rule 21. “类型强制转换”: 例如从 int 转换到更大的 void *
+# rule21: “类型强制转换”: 例如从 int 转换到更大的 void *
 if(OVERLOOK_ENABLE_RULE21)
   if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
     overlook_list_append(OVERLOOK_C_FLAGS /we4312)
@@ -379,7 +380,7 @@ if(OVERLOOK_ENABLE_RULE21)
   endif()
 endif()
 
-# Rule 22. 不可识别的字符转义序列
+# rule22: 不可识别的字符转义序列
 # GCC5.4 能显示 warning 但无别名，因而无法视为 error
 if(OVERLOOK_ENABLE_RULE22)
   if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
@@ -391,7 +392,7 @@ if(OVERLOOK_ENABLE_RULE22)
   endif()
 endif()
 
-# Rule 23. 类函数宏的调用 参数过多
+# rule23: 类函数宏的调用 参数过多
 # VC/VC++ 报警告。Linux 下的 GCC/Clang 报 error
 if(OVERLOOK_ENABLE_RULE23)
   if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
@@ -400,7 +401,7 @@ if(OVERLOOK_ENABLE_RULE23)
   endif()
 endif()
 
-# Rule 24. 类函数宏的调用 参数不足
+# rule24: 类函数宏的调用 参数不足
 # VC/VC++ 同时会报 error C2059
 # Linux GCC/Clang 直接报错
 if(OVERLOOK_ENABLE_RULE24)
@@ -410,7 +411,7 @@ if(OVERLOOK_ENABLE_RULE24)
   endif()
 endif()
 
-# Rule 25. #undef 没有跟一个标识符
+# rule25: #undef 没有跟一个标识符
 # Linux GCC/Clang 直接报错
 if(OVERLOOK_ENABLE_RULE25)
   if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
@@ -419,7 +420,7 @@ if(OVERLOOK_ENABLE_RULE25)
   endif()
 endif()
 
-# Rule 26. 单行注释包含行继续符
+# rule26: 单行注释包含行继续符
 # 可能会导致下一行代码报错，而问题根源在包含继续符的这行注释
 if(OVERLOOK_ENABLE_RULE26)
   if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
@@ -434,7 +435,7 @@ if(OVERLOOK_ENABLE_RULE26)
   endif()
 endif()
 
-# Rule 27. 没有使用到表达式结果（无用代码行，应删除）
+# rule27: 没有使用到表达式结果（无用代码行，应删除）
 # 感觉容易被误伤，可以考虑关掉
 if(OVERLOOK_ENABLE_RULE27)
   if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
@@ -449,7 +450,7 @@ if(OVERLOOK_ENABLE_RULE27)
   endif()
 endif()
 
-# Rule 28. “==”: 未使用表达式结果；是否打算使用“=”?
+# rule28: “==”: 未使用表达式结果；是否打算使用“=”?
 # Linux GCC 没有对应的编译选项
 if(OVERLOOK_ENABLE_RULE28)
   if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
@@ -461,7 +462,7 @@ if(OVERLOOK_ENABLE_RULE28)
   endif()
 endif()
 
-# Rule 29. C++中，禁止把字符串常量赋值给 char* 变量
+# rule29: C++中，禁止把字符串常量赋值给 char* 变量
 # VS2019 开启 /Wall 后也查不到
 if(OVERLOOK_ENABLE_RULE29)
   if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
@@ -476,7 +477,7 @@ if(OVERLOOK_ENABLE_RULE29)
   endif()
 endif()
 
-# Rule 30. 所有的控件路径(if/else)必须都有返回值
+# rule30: 所有的控件路径(if/else)必须都有返回值
 # NDK21 Clang / Linux Clang/GCC/G++ 默认都报 error
 if(OVERLOOK_ENABLE_RULE30)
   if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
@@ -485,7 +486,7 @@ if(OVERLOOK_ENABLE_RULE30)
   endif()
 endif()
 
-# Rule 31. multi-char constant
+# rule31: multi-char constant
 # MSVC 没有对应的选项
 if(OVERLOOK_ENABLE_RULE31)
   if(CMAKE_C_COMPILER_ID MATCHES "GNU")
@@ -497,7 +498,7 @@ if(OVERLOOK_ENABLE_RULE31)
   endif()
 endif()
 
-# Rule 32. 用 memset 等 C 函数设置 非 POD class 对象
+# rule32: 用 memset 等 C 函数设置 非 POD class 对象
 # Linux下, GCC9.3 能发现此问题, 但clang10 不能发现
 if(OVERLOOK_ENABLE_RULE32)
   if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
@@ -507,7 +508,7 @@ if(OVERLOOK_ENABLE_RULE32)
   endif()
 endif()
 
-## Rule 33. 括号里面是单个等号而不是双等号
+## rule33: 括号里面是单个等号而不是双等号
 # Linux Clang14 可以发现问题，但 GCC9.3 无法发现; android clang 可以发现
 if(OVERLOOK_ENABLE_RULE33)
   if(CMAKE_C_COMPILER_ID MATCHES "Clang")
@@ -516,7 +517,7 @@ if(OVERLOOK_ENABLE_RULE33)
   endif()
 endif()
 
-## Rule 34. double 型转 float 型，可能有精度丢失（尤其在 float 较大时）
+## rule34: double 型转 float 型，可能有精度丢失（尤其在 float 较大时）
 # MSVC 默认是放在 /W3
 if(OVERLOOK_ENABLE_RULE34)
   if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
@@ -525,7 +526,7 @@ if(OVERLOOK_ENABLE_RULE34)
   endif()
 endif()
 
-## Rule 35. 父类有 virtual 的成员函数，但析构函数是 public 并且不是 virtual, 会导致 UB
+## rule35: 父类有 virtual 的成员函数，但析构函数是 public 并且不是 virtual, 会导致 UB
 # https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#c35-a-base-class-destructor-should-be-either-public-and-virtual-or-protected-and-non-virtual
 # -Wnon-virtual-dtor (C++ and Objective-C++ only)
 # Warn when a class has virtual functions and an accessible non-virtual destructor itself or in an accessible polymorphic base
