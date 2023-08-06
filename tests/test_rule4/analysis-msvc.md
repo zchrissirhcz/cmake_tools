@@ -1,8 +1,27 @@
-The MSVC compiler with C code that missing return value, inspected disassembly in RelWithDebInfo build type:
+First, rename main.cpp to main.c, and modify CMakeLists.txt.
 
-![](VS2022_RelWithDebInfo_Disassembly.webp)
+## Debug build type result
+In VS2022-x64 Debug build type, the running result is:
+```
+0 1 2 3 4 5 6 7 8 9
+res=233
+```
 
-Corresponding code:
+![](vs2022-x64-Debug.png)
+
+`res=233` is due to `hello()` returns 233.
+
+## RelWithDebInfo build type result
+```
+0 1 2 3 4 5 6 7 8 9
+res=1
+```
+
+![](vs2022-x64-RelWithDebInfo.png)
+
+`res=1` is due to `printf()` returns 1. The `hello()` is not called due to optimization.
+
+## Corresponding code:
 ```c
 #include <stdio.h>
 
