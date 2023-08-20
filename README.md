@@ -29,7 +29,7 @@ In [overlook.cmake](overlook.cmake), there are **36 serious compilation warnings
 - Memory leaks(caused by missing including header file)
 - Trap(caused by missing return value)
 
-These severe bugs can not be inspected by famous tools like AddressSanitizer, Valgrind, VLD, but [overlook.cmake](overlook.cmake) can.
+These severe bugs can not be inspected by famous tools like AddressSanitizer, Valgrind, VLD, but [overlook.cmake](overlook.cmake) can. People may also use [clang-tidy](https://clang.llvm.org/extra/clang-tidy/), which will report more compile warnings (instead of compile errors).
 
 ## Usage
 
@@ -96,10 +96,10 @@ Go to [makefiles](makefiles/README.md) directory for details.
 ## What about Visual Studio?
 
 You can generate Visual Studio Solution (.sln) via either:
-- cmake command line: `cmake -G "Visual Studio 16 2019" -A x64 /path/to/CMakeLists.txt`
+- cmake command line: `cmake -G "Visual Studio 17 2022" -A x64 /directory/that/contains/CMakeLists.txt`
 - cmake-gui
 
-You may also directly open an cmake-based C/C++ project via VS2019.
+You may also directly open an cmake-based C/C++ project via VS2015/VS2017/VS2019/VS2022.
 
 ## References
 - https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines
