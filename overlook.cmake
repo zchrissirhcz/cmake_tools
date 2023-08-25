@@ -15,7 +15,7 @@ if(OVERLOOK_INCLUDE_GUARD)
 endif()
 set(OVERLOOK_INCLUDE_GUARD TRUE)
 
-set(OVERLOOK_VERSION "2023.08.06")
+set(OVERLOOK_VERSION "2023.08.25")
 
 option(OVERLOOK_FLAGS_GLOBAL "use safe compilation flags?" ON)
 option(OVERLOOK_USE_STRICT_FLAGS "strict c/c++ flags checking?" ON)
@@ -540,6 +540,17 @@ if(OVERLOOK_ENABLE_RULE35)
     overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=non-virtual-dtor)
   elseif(CMAKE_C_COMPILER_ID MATCHES "Clang")
     overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=non-virtual-dtor)
+  endif()
+endif()
+
+## rule36: switch case 忘记写 break, 会 fallthrough 执行， 可能导致数组越界(具体取决于你的代码). 不写break我们视为错误。
+if(OVERLOOK_ENABLE_RULE36)
+  if((CMAKE_C_COMPILER_ID MATCHES "GNU") OR (CMAKE_CXX_COMPILER_ID MATCHES "GNU"))
+    overlook_list_append(OVERLOOK_C_FLAGS -Werror=implicit-fallthrough)
+    overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=implicit-fallthrough)
+  elseif((CMAKE_C_COMPILER_ID MATCHES "Clang") OR (CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
+    overlook_list_append(OVERLOOK_C_FLAGS  -Werror=implicit-fallthrough)
+    overlook_list_append(OVERLOOK_CXX_FLAGS  -Werror=implicit-fallthrough)
   endif()
 endif()
 
