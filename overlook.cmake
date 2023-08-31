@@ -14,8 +14,9 @@ if(OVERLOOK_INCLUDE_GUARD)
   return()
 endif()
 set(OVERLOOK_INCLUDE_GUARD TRUE)
+set(OVERLOOK "${CMAKE_CURRENT_LIST_FILE}")
 
-set(OVERLOOK_VERSION "2023.08.31")
+set(OVERLOOK_VERSION "2023.08.31_v2")
 
 option(OVERLOOK_FLAGS_GLOBAL     "Use safe compilation flags?"     ON)
 option(OVERLOOK_USE_STRICT_FLAGS "Do strict c/c++ flags checking?" ON)
