@@ -15,12 +15,11 @@ if(OVERLOOK_INCLUDE_GUARD)
 endif()
 set(OVERLOOK_INCLUDE_GUARD TRUE)
 
-set(OVERLOOK_VERSION "2023.08.25")
+set(OVERLOOK_VERSION "2023.08.31")
 
-option(OVERLOOK_FLAGS_GLOBAL "use safe compilation flags?" ON)
-option(OVERLOOK_USE_STRICT_FLAGS "strict c/c++ flags checking?" ON)
-option(OVERLOOK_USE_CPPCHECK "use cppcheck for static checking?" OFF)
-option(OVERLOOK_VERBOSE "verbose output?" OFF)
+option(OVERLOOK_FLAGS_GLOBAL     "Use safe compilation flags?"     ON)
+option(OVERLOOK_USE_STRICT_FLAGS "Do strict c/c++ flags checking?" ON)
+option(OVERLOOK_VERBOSE          "Verbose output?"                 OFF)
 
 set(OVERLOOK_C_FLAGS "")
 set(OVERLOOK_CXX_FLAGS "")
@@ -606,17 +605,35 @@ endfunction()
 #   注: 目前只有终端下能看到对应输出，其中 NDK 下仅第一次输出
 #
 ###############################################################
-if(OVERLOOK_USE_CPPCHECK)
+
+# Usage:
+# add_executable(hello hello.cpp)
+# overlook_apply_cppcheck(hello)
+function(overlook_apply_cppcheck targetName)
   find_program(CMAKE_CXX_CPPCHECK NAMES cppcheck)
-  if(CMAKE_CXX_CPPCHECK)
-    message(STATUS "cppcheck found")
-    list(APPEND CMAKE_CXX_CPPCHECK
-      "--enable=warning"
-      "--inconclusive"
-      "--force"
-      "--inline-suppr"
-    )
-  else()
-    message(STATUS "cppcheck not found. ignore it")
-  endif()
-endif()
+
+  # collecting absolute paths for each source file in the given target
+  get_target_property(target_sources ${targetName} SOURCES)
+  get_target_property(target_source_dir ${targetName} SOURCE_DIR)
+  # message(STATUS "target_source_dir: ${target_source_dir}")
+  # message(STATUS "target_sources:")
+  set(src_path_lst "")
+  foreach(target_source ${target_sources})
+    # message(STATUS "   ${target_source}")
+    if(IS_ABSOLUTE ${target_source})
+      set(target_source_absolute_path ${target_source})
+    else()
+      set(target_source_absolute_path ${target_source_dir}/${target_source})
+    endif()
+    list(APPEND src_path_lst ${target_source_absolute_path})
+  endforeach()
+
+  set(cppcheck_raw_command "cppcheck --enable=warning --inconclusive --force --inline-suppr ${src_path_lst}")
+  string(REPLACE " " ";" cppcheck_converted_command "${cppcheck_raw_command}")
+  add_custom_target(
+    cppcheck
+    COMMAND ${cppcheck_converted_command}
+  )
+  add_dependencies(${targetName} cppcheck)
+endfunction()
+
