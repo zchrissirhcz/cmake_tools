@@ -1,9 +1,9 @@
-# OverLook
+# Overlook
 
 <img alt="GitHub" src="https://img.shields.io/github/license/zchrissirhcz/overlook"> ![Ubuntu](https://img.shields.io/badge/Ubuntu-333333?style=flat&logo=ubuntu) ![Windows](https://img.shields.io/badge/Windows-333333?style=flat&logo=windows&logoColor=blue) ![macOS](https://img.shields.io/badge/-macOS-333333?style=flat&logo=apple) ![android](https://img.shields.io/badge/-Android-333333?style=flat&logo=Android)
 
 
-OverLook: Amplify warnings that shouldn't be ignored.
+Overlook: a cmake plugin for safer c/c++ programming.
 
 ## Introduction
 
@@ -61,29 +61,30 @@ If you like this project, welcome Star!
 
 **Disable a specific warning**
 
-For example, you would like to treat "shadowed variable" warning as warning, instead of error, then search `shadow` in `overlook.cmake`, and comment that rule out (via `#`):
-```
-# 5. 避免使用影子(shadow)变量
-# 有时候会误伤，例如eigen等开源项目，可以手动关掉
-#if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
-#  overlook_list_append(OVERLOOK_C_FLAGS /we6244 /we6246 /we4457 /we4456)
-#  overlook_list_append(OVERLOOK_CXX_FLAGS /we6244 /we6246 /we4457 /we4456)
-#else()
-#  overlook_list_append(OVERLOOK_C_FLAGS -Werror=shadow)
-#  overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=shadow)
+Compile your code with overlook.cmake applyed, see that error nessage's type/number, search it in overlook.cmake and comment it out via inserting `#`, such as:
+```cmake
+#if(OVERLOOK_ENABLE_RULE32)
+#  if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+#    if(CMAKE_CXX_COMPILER_VERSION GREATER 7.5)
+#      overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=class-memaccess)
+#    endif()
+#  endif()
 #endif()
 ```
 
 **Options**
+
 You may override the following options:
+
 ```cmake
-option(OVERLOOK_FLAGS_GLOBAL "use safe compilation flags?" ON)
-option(OVERLOOK_USE_STRICT_FLAGS "strict c/c++ flags checking?" OFF)
-option(OVERLOOK_VERBOSE "verbose output?" OFF)
+option(OVERLOOK_APPLY_FLAGS_GLOBAL "Apply overlook globally?" ON)
+option(OVERLOOK_VERBOSE            "Verbose output?"          OFF)
 ```
 
 ## Debugging
+
 If you're using Overlook, but it seems not work, possible cases:
+
 1. The overlook.cmake you are using is not the latest.
 2. Overlook's rules are suppressed due to your `add_definitions(-w)`, which ignore all warnings thus overlook won't work.
 3. Your compiler is not covered by Overlook. If so, text me or create an issue.
@@ -102,5 +103,6 @@ You can generate Visual Studio Solution (.sln) via either:
 You may also directly open an cmake-based C/C++ project via VS2015/VS2017/VS2019/VS2022.
 
 ## References
+
 - https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines
 - https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html

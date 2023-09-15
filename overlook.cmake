@@ -1,6 +1,6 @@
 ###############################################################
 #
-# OverLook: Amplify C/C++ warnings that shouldn't be ignored.
+# Overlook: a cmake plugin for safer c/c++ programming.
 #
 # Author:   Zhuo Zhang <imzhuo@foxmail.com>
 # Homepage: https://github.com/zchrissirhcz/overlook
@@ -16,11 +16,10 @@ endif()
 set(OVERLOOK_INCLUDE_GUARD TRUE)
 set(OVERLOOK "${CMAKE_CURRENT_LIST_FILE}")
 
-set(OVERLOOK_VERSION "2023.08.31_v2")
+set(OVERLOOK_VERSION "2023.09.15")
 
-option(OVERLOOK_FLAGS_GLOBAL     "Use safe compilation flags?"     ON)
-option(OVERLOOK_USE_STRICT_FLAGS "Do strict c/c++ flags checking?" ON)
-option(OVERLOOK_VERBOSE          "Verbose output?"                 OFF)
+option(OVERLOOK_APPLY_FLAGS_GLOBAL "Apply overlook globally?" ON)
+option(OVERLOOK_VERBOSE            "Verbose output?"          OFF)
 
 set(OVERLOOK_C_FLAGS "")
 set(OVERLOOK_CXX_FLAGS "")
@@ -35,20 +34,12 @@ function(overlook_list_append __string __element)
 endfunction()
 
 # Print overlook information
-message(STATUS "------------------------------------------------------------")
-message(STATUS "  Using overlook, the CMake plugin for safer C/C++ code")
-message(STATUS "  Author: Zhuo Zhang (imzhuo@foxmail.com)")
-message(STATUS "  Homepage: https://github.com/zchrissirhcz/overlook")
-message(STATUS "  OVERLOOK_VERSION: ${OVERLOOK_VERSION}")
-message(STATUS "------------------------------------------------------------")
-
-# Different version of same compiler may support different compile options.
-if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND CLANG_VERSION_STRING)
-  message(STATUS "--- CLANG_VERSION_MAJOR is: ${CLANG_VERSION_MAJOR}")
-  message(STATUS "--- CLANG_VERSION_MINOR is: ${CLANG_VERSION_MINOR}")
-  message(STATUS "--- CLANG_VERSION_PATCHLEVEL is: ${CLANG_VERSION_PATCHLEVEL}")
-  message(STATUS "--- CLANG_VERSION_STRING is: ${CLANG_VERSION_STRING}")
-endif()
+message(STATUS "----------------------------------------------------------")
+message(STATUS "  Overlook: a cmake plugin for safer C/C++ programming    ")
+message(STATUS "  Author  : Zhuo Zhang (imzhuo@foxmail.com)               ")
+message(STATUS "  Homepage: https://github.com/zchrissirhcz/overlook      ")
+message(STATUS "  Version : ${OVERLOOK_VERSION}                           ")
+message(STATUS "----------------------------------------------------------")
 
 if(CMAKE_C_COMPILER_ID)
   set(OVERLOOK_WITH_C TRUE)
@@ -64,56 +55,9 @@ endif()
 
 # Project LANGUAGE not including C and CXX so we return
 if((NOT OVERLOOK_WITH_C) AND (NOT OVERLOOK_WITH_CXX))
-  message("OverLook WARNING: neither C nor CXX compilers available. No OVERLOOK C/C++ flags will be set")
+  message("OVERLOOK/W: Neither C nor CXX compilers available. No OVERLOOK C/C++ flags will be set")
   message("  NOTE: You many consider add C and CXX in `project()` command")
   return()
-endif()
-
-option(OVERLOOK_ENABLE_RULE1  "enable rule1?"  ON)
-option(OVERLOOK_ENABLE_RULE2  "enable rule2?"  ON)
-option(OVERLOOK_ENABLE_RULE3  "enable rule3?"  ON)
-option(OVERLOOK_ENABLE_RULE4  "enable rule4?"  ON)
-option(OVERLOOK_ENABLE_RULE5  "enable rule5?"  ON)
-option(OVERLOOK_ENABLE_RULE6  "enable rule6?"  ON)
-option(OVERLOOK_ENABLE_RULE7  "enable rule7?"  ON)
-option(OVERLOOK_ENABLE_RULE8  "enable rule8?"  ON)
-
-option(OVERLOOK_ENABLE_RULE10 "enable rule10?" ON)
-option(OVERLOOK_ENABLE_RULE11 "enable rule11?" ON)
-option(OVERLOOK_ENABLE_RULE12 "enable rule12?" ON)
-option(OVERLOOK_ENABLE_RULE13 "enable rule13?" ON)
-option(OVERLOOK_ENABLE_RULE14 "enable rule14?" ON)
-option(OVERLOOK_ENABLE_RULE15 "enable rule15?" ON)
-option(OVERLOOK_ENABLE_RULE16 "enable rule16?" ON)
-option(OVERLOOK_ENABLE_RULE17 "enable rule17?" ON)
-option(OVERLOOK_ENABLE_RULE18 "enable rule18?" ON)
-option(OVERLOOK_ENABLE_RULE19 "enable rule19?" ON)
-
-option(OVERLOOK_ENABLE_RULE21 "enable rule21?" ON)
-option(OVERLOOK_ENABLE_RULE22 "enable rule22?" ON)
-option(OVERLOOK_ENABLE_RULE23 "enable rule23?" ON)
-option(OVERLOOK_ENABLE_RULE24 "enable rule24?" ON)
-option(OVERLOOK_ENABLE_RULE25 "enable rule25?" ON)
-option(OVERLOOK_ENABLE_RULE26 "enable rule26?" ON)
-option(OVERLOOK_ENABLE_RULE27 "enable rule27?" ON)
-option(OVERLOOK_ENABLE_RULE28 "enable rule28?" ON)
-option(OVERLOOK_ENABLE_RULE29 "enable rule29?" ON)
-option(OVERLOOK_ENABLE_RULE30 "enable rule30?" ON)
-option(OVERLOOK_ENABLE_RULE31 "enable rule31?" ON)
-option(OVERLOOK_ENABLE_RULE32 "enable rule32?" ON)
-option(OVERLOOK_ENABLE_RULE33 "enable rule33?" ON)
-
-option(OVERLOOK_ENABLE_RULE35 "enable rule35?" ON)
-option(OVERLOOK_ENABLE_RULE36 "enable rule36?" ON)
-
-if(OVERLOOK_USE_STRICT_FLAGS)
-  option(OVERLOOK_ENABLE_RULE9  "enable rule9?"   ON)
-  option(OVERLOOK_ENABLE_RULE20 "enable rule20?"  ON)
-  option(OVERLOOK_ENABLE_RULE34 "enable rule34?"  ON)
-else()
-  option(OVERLOOK_ENABLE_RULE9  "enable rule9?"   OFF)
-  option(OVERLOOK_ENABLE_RULE20 "enable rule20?"  OFF)
-  option(OVERLOOK_ENABLE_RULE34 "enable rule34?"  OFF)
 endif()
 
 # rule0: don't ignore all that warnings
@@ -123,10 +67,13 @@ if((CMAKE_C_COMPILER_ID MATCHES "GNU") OR (CMAKE_C_COMPILER_ID MATCHES "Clang"))
   message(STATUS "Overlook Detected Global Compile Options: ${overlook_detected_global_compile_options}")
   string(REGEX MATCH "-w" ignore_all_warnings "${overlook_detected_global_compile_options}" )
   if(ignore_all_warnings)
-    message(FATAL_ERROR "Overlook won't working due to `-w` found in compile options. Consider remove it (in `add_compile_options)`")
+    message(FATAL_ERROR "OverLook won't work due to `-w` found in compile options. Consider remove it (in `add_compile_options)`")
   endif()
 endif()
 
+#--------------------------------------------------------------------------------
+# Function return value related
+#--------------------------------------------------------------------------------
 # rule1: calls a function when it is not declared. C compiler doesn't treat it an error, but we do.
 # 函数没有声明就使用, C编译器默认不报错，改为强制报错
 # 解决bug: 地址截断; 内存泄漏
@@ -161,25 +108,6 @@ if(OVERLOOK_ENABLE_RULE2)
   endif()
 endif()
 
-# rule3: 指针类型不兼容，C编译器默认不报错，改为强制报错
-# 解决bug: crash或结果异常
-if(OVERLOOK_ENABLE_RULE3)
-  if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
-    overlook_list_append(OVERLOOK_C_FLAGS /we4133)
-    overlook_list_append(OVERLOOK_CXX_FLAGS /we4133)
-  elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-    if(CMAKE_CXX_COMPILER_VERSION GREATER 4.8) # gcc/g++ 4.8.3 not ok
-      overlook_list_append(OVERLOOK_C_FLAGS -Werror=incompatible-pointer-types)
-      if(CMAKE_CXX_COMPILER_VERSION LESS 9.1)
-        overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=incompatible-pointer-types)
-      endif()
-    endif()
-  elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    overlook_list_append(OVERLOOK_C_FLAGS -Werror=incompatible-pointer-types)
-    overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=incompatible-pointer-types)
-  endif()
-endif()
-
 # rule4: when missing return value for non-void function, C/C++ compiler treat it as UB and not report error, we treat it as error.
 # it may cause crash, or just return un-expected result, depends on the compiler and the code you write
 # 函数应该有返回值但没有 return 返回值，或不是所有路径都有返回值，C和C++编译器默认不报错，改为强制报错
@@ -195,15 +123,12 @@ if(OVERLOOK_ENABLE_RULE4)
   endif()
 endif()
 
-# rule5: 避免使用影子(shadow)变量
-# 有时候会误伤, 例如eigen等开源项目, 可以手动关掉
-if(OVERLOOK_ENABLE_RULE5)
+# rule30: 所有的控件路径(if/else)必须都有返回值
+# NDK21 Clang / Linux Clang/GCC/G++ 默认都报 error
+if(OVERLOOK_ENABLE_RULE30)
   if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
-    overlook_list_append(OVERLOOK_C_FLAGS /we6244 /we6246 /we4457 /we4456)
-    overlook_list_append(OVERLOOK_CXX_FLAGS /we6244 /we6246 /we4457 /we4456)
-  else()
-    overlook_list_append(OVERLOOK_C_FLAGS -Werror=shadow)
-    overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=shadow)
+    overlook_list_append(OVERLOOK_C_FLAGS /we4715)
+    overlook_list_append(OVERLOOK_CXX_FLAGS /we4715)
   endif()
 endif()
 
@@ -221,71 +146,9 @@ if(OVERLOOK_ENABLE_RULE6)
   endif()
 endif()
 
-# rule7: 变量没初始化就使用，要避免
-if(OVERLOOK_ENABLE_RULE7)
-  if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
-    overlook_list_append(OVERLOOK_C_FLAGS "/we4700 /we26495")
-    overlook_list_append(OVERLOOK_CXX_FLAGS "/we4700 /we26495")
-  else()
-    overlook_list_append(OVERLOOK_C_FLAGS -Werror=uninitialized)
-    overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=uninitialized)
-  endif()
-endif()
-
-# rule8: printf 等语句中的格式串和实参类型不匹配，要避免
-if(OVERLOOK_ENABLE_RULE8)
-  if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
-    overlook_list_append(OVERLOOK_C_FLAGS /we4477)
-    overlook_list_append(OVERLOOK_CXX_FLAGS /we4477)
-  else()
-    overlook_list_append(OVERLOOK_C_FLAGS -Werror=format)
-    overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=format)
-  endif()
-endif()
-
-# rule9: 避免把 unsigned int 和 int 直接比较
-# 通常会误伤，例如 for 循环中。可以考虑关掉
-if(OVERLOOK_ENABLE_RULE9)
-  if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
-    overlook_list_append(OVERLOOK_C_FLAGS /we4018)
-    overlook_list_append(OVERLOOK_CXX_FLAGS /we4018)
-  elseif(CMAKE_C_COMPILER_ID MATCHES "GNU")
-    overlook_list_append(OVERLOOK_C_FLAGS -Werror=sign-compare)
-    overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=sign-compare)
-  elseif(CMAKE_C_COMPILER_ID MATCHES "Clang")
-    overlook_list_append(OVERLOOK_C_FLAGS -Werror=sign-compare)
-    overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=sign-compare)
-  endif()
-endif()
-
-# rule10: 避免把 int 指针赋值给 int 类型变量
-if(OVERLOOK_ENABLE_RULE10)
-  if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
-    overlook_list_append(OVERLOOK_C_FLAGS /we4047)
-    overlook_list_append(OVERLOOK_CXX_FLAGS /we4047)
-  elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-    if(CMAKE_CXX_COMPILER_VERSION GREATER 4.8)
-      overlook_list_append(OVERLOOK_C_FLAGS -Werror=int-conversion)
-      if(CMAKE_CXX_COMPILER_VERSION LESS 9.1)
-        overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=int-conversion)
-      endif()
-    endif()
-  elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    overlook_list_append(OVERLOOK_C_FLAGS -Werror=int-conversion)
-    overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=int-conversion)
-  endif()
-endif()
-
-# rule11: 检查数组下标越界访问
-if(OVERLOOK_ENABLE_RULE11)
-  if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
-    overlook_list_append(OVERLOOK_C_FLAGS "/we6201 /we6386 /we4789")
-    overlook_list_append(OVERLOOK_CXX_FLAGS "/we6201 /we6386 /we4789")
-  else()
-    overlook_list_append(OVERLOOK_C_FLAGS -Werror=array-bounds)
-    overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=array-bounds)
-  endif()
-endif()
+#--------------------------------------------------------------------------------
+# Function argument/parameter, type conversion/casting related
+#--------------------------------------------------------------------------------
 
 # rule12: 函数声明中的参数列表和定义中不一样。在 MSVC C 下为警告, Linux Clang 下报错
 if(OVERLOOK_ENABLE_RULE12)
@@ -313,21 +176,51 @@ if(OVERLOOK_ENABLE_RULE14)
   endif()
 endif()
 
-# rule15: 避免符号重复定义（变量对应的强弱符号）。只在 C 中出现。
-# 暂时没找到 MSVC 的对应编译选项
-if(OVERLOOK_ENABLE_RULE15)
-  if(CMAKE_C_COMPILER_ID MATCHES "GNU" OR CMAKE_C_COMPILER_ID MATCHES "Clang")
-    overlook_list_append(OVERLOOK_C_FLAGS -fno-common)
+# rule3: 指针类型不兼容，C编译器默认不报错，改为强制报错
+# 解决bug: crash或结果异常
+if(OVERLOOK_ENABLE_RULE3)
+  if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
+    overlook_list_append(OVERLOOK_C_FLAGS /we4133)
+    overlook_list_append(OVERLOOK_CXX_FLAGS /we4133)
+  elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+    if(CMAKE_CXX_COMPILER_VERSION GREATER 4.8) # gcc/g++ 4.8.3 not ok
+      overlook_list_append(OVERLOOK_C_FLAGS -Werror=incompatible-pointer-types)
+      if(CMAKE_CXX_COMPILER_VERSION LESS 9.1)
+        overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=incompatible-pointer-types)
+      endif()
+    endif()
+  elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    overlook_list_append(OVERLOOK_C_FLAGS -Werror=incompatible-pointer-types)
+    overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=incompatible-pointer-types)
   endif()
 endif()
 
-# rule16: 释放非堆内存
-# TODO: 检查 MSVC
-# Linux Clang8.0 无法检测到
-if(OVERLOOK_ENABLE_RULE16)
-  if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-    overlook_list_append(OVERLOOK_C_FLAGS -Werror=free-nonheap-object)
-    overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=free-nonheap-object)
+# rule10: 避免把 int 指针赋值给 int 类型变量
+if(OVERLOOK_ENABLE_RULE10)
+  if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
+    overlook_list_append(OVERLOOK_C_FLAGS /we4047)
+    overlook_list_append(OVERLOOK_CXX_FLAGS /we4047)
+  elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+    if(CMAKE_CXX_COMPILER_VERSION GREATER 4.8)
+      overlook_list_append(OVERLOOK_C_FLAGS -Werror=int-conversion)
+      if(CMAKE_CXX_COMPILER_VERSION LESS 9.1)
+        overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=int-conversion)
+      endif()
+    endif()
+  elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    overlook_list_append(OVERLOOK_C_FLAGS -Werror=int-conversion)
+    overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=int-conversion)
+  endif()
+endif()
+
+# rule8: printf 等语句中的格式串和实参类型不匹配，要避免
+if(OVERLOOK_ENABLE_RULE8)
+  if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
+    overlook_list_append(OVERLOOK_C_FLAGS /we4477)
+    overlook_list_append(OVERLOOK_CXX_FLAGS /we4477)
+  else()
+    overlook_list_append(OVERLOOK_C_FLAGS -Werror=format)
+    overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=format)
   endif()
 endif()
 
@@ -339,37 +232,7 @@ if(OVERLOOK_ENABLE_RULE17)
   endif()
 endif()
 
-# rule18: 宏定义重复
-# gcc5~gcc9 无法检查
-if(OVERLOOK_ENABLE_RULE18)
-  if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
-    overlook_list_append(OVERLOOK_C_FLAGS /we4005)
-    overlook_list_append(OVERLOOK_CXX_FLAGS /we4005)
-  elseif(CMAKE_C_COMPILER_ID MATCHES "Clang")
-    overlook_list_append(OVERLOOK_C_FLAGS -Werror=macro-redefined)
-    overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=macro-redefined)
-  endif()
-endif()
-
-# rule19: pragma init_seg 指定了非法(不能识别的)section名字
-# VC++ 特有。Linux 下的 gcc/clang 没有
-if(OVERLOOK_ENABLE_RULE19)
-  if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    overlook_list_append(OVERLOOK_CXX_FLAGS /we4075)
-  endif()
-endif()
-
-# rule20: size_t 类型被转为更窄类型
-# VC/VC++ 特有。 Linux 下的 gcc/clang 没有
-# 有点过于严格了
-if(OVERLOOK_ENABLE_RULE20)
-  if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
-    overlook_list_append(OVERLOOK_C_FLAGS /we4267)
-    overlook_list_append(OVERLOOK_CXX_FLAGS /we4267)
-  endif()
-endif()
-
-# rule21: “类型强制转换”: 例如从 int 转换到更大的 void *
+# rule21: “类型强制转换”: 例如从 int 转换到更大的 void*
 if(OVERLOOK_ENABLE_RULE21)
   if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
     overlook_list_append(OVERLOOK_C_FLAGS /we4312)
@@ -380,18 +243,6 @@ if(OVERLOOK_ENABLE_RULE21)
   elseif(CMAKE_C_COMPILER_ID MATCHES "Clang")
     overlook_list_append(OVERLOOK_C_FLAGS -Werror=int-to-pointer-cast)
     overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=int-to-pointer-cast)
-  endif()
-endif()
-
-# rule22: 不可识别的字符转义序列
-# GCC5.4 能显示 warning 但无别名，因而无法视为 error
-if(OVERLOOK_ENABLE_RULE22)
-  if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
-    overlook_list_append(OVERLOOK_C_FLAGS /we4129)
-    overlook_list_append(OVERLOOK_CXX_FLAGS /we4129)
-  elseif(CMAKE_C_COMPILER_ID MATCHES "Clang")
-    overlook_list_append(OVERLOOK_C_FLAGS -Werror=unknown-escape-sequence)
-    overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=unknown-escape-sequence)
   endif()
 endif()
 
@@ -414,6 +265,85 @@ if(OVERLOOK_ENABLE_RULE24)
   endif()
 endif()
 
+#--------------------------------------------------------------------------------
+# Initialization, memory release related
+#--------------------------------------------------------------------------------
+
+# rule7: 变量没初始化就使用，要避免
+if(OVERLOOK_ENABLE_RULE7)
+  if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
+    overlook_list_append(OVERLOOK_C_FLAGS "/we4700 /we26495")
+    overlook_list_append(OVERLOOK_CXX_FLAGS "/we4700 /we26495")
+  else()
+    overlook_list_append(OVERLOOK_C_FLAGS -Werror=uninitialized)
+    overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=uninitialized)
+  endif()
+endif()
+
+# rule11: 检查数组下标越界访问
+if(OVERLOOK_ENABLE_RULE11)
+  if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
+    overlook_list_append(OVERLOOK_C_FLAGS "/we6201 /we6386 /we4789")
+    overlook_list_append(OVERLOOK_CXX_FLAGS "/we6201 /we6386 /we4789")
+  else()
+    overlook_list_append(OVERLOOK_C_FLAGS -Werror=array-bounds)
+    overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=array-bounds)
+  endif()
+endif()
+
+# rule16: 释放非堆内存
+# TODO: 检查 MSVC
+# Linux Clang8.0 无法检测到
+if(OVERLOOK_ENABLE_RULE16)
+  if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+    overlook_list_append(OVERLOOK_C_FLAGS -Werror=free-nonheap-object)
+    overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=free-nonheap-object)
+  endif()
+endif()
+
+# rule32: 用 memset 等 C 函数设置 非 POD class 对象
+# Linux下, GCC9.3 能发现此问题, 但clang10 不能发现
+if(OVERLOOK_ENABLE_RULE32)
+  if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+    if(CMAKE_CXX_COMPILER_VERSION GREATER 7.5)
+      overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=class-memaccess)
+    endif()
+  endif()
+endif()
+
+# rule15: 避免符号重复定义（变量对应的强弱符号）。只在 C 中出现。
+# 暂时没找到 MSVC 的对应编译选项
+if(OVERLOOK_ENABLE_RULE15)
+  if(CMAKE_C_COMPILER_ID MATCHES "GNU" OR CMAKE_C_COMPILER_ID MATCHES "Clang")
+    overlook_list_append(OVERLOOK_C_FLAGS -fno-common)
+  endif()
+endif()
+
+
+#--------------------------------------------------------------------------------
+# Pre-compilation directive related
+#--------------------------------------------------------------------------------
+
+# rule18: 宏定义重复
+# gcc5~gcc9 无法检查
+if(OVERLOOK_ENABLE_RULE18)
+  if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
+    overlook_list_append(OVERLOOK_C_FLAGS /we4005)
+    overlook_list_append(OVERLOOK_CXX_FLAGS /we4005)
+  elseif(CMAKE_C_COMPILER_ID MATCHES "Clang")
+    overlook_list_append(OVERLOOK_C_FLAGS -Werror=macro-redefined)
+    overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=macro-redefined)
+  endif()
+endif()
+
+# rule19: pragma init_seg 指定了非法(不能识别的)section名字
+# VC++ 特有。Linux 下的 gcc/clang 没有
+if(OVERLOOK_ENABLE_RULE19)
+  if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    overlook_list_append(OVERLOOK_CXX_FLAGS /we4075)
+  endif()
+endif()
+
 # rule25: #undef 没有跟一个标识符
 # Linux GCC/Clang 直接报错
 if(OVERLOOK_ENABLE_RULE25)
@@ -423,20 +353,10 @@ if(OVERLOOK_ENABLE_RULE25)
   endif()
 endif()
 
-# rule26: 单行注释包含行继续符
-# 可能会导致下一行代码报错，而问题根源在包含继续符的这行注释
-if(OVERLOOK_ENABLE_RULE26)
-  if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
-    overlook_list_append(OVERLOOK_C_FLAGS /we4006)
-    overlook_list_append(OVERLOOK_CXX_FLAGS /we4006)
-  elseif(CMAKE_C_COMPILER_ID MATCHES "GNU")
-    overlook_list_append(OVERLOOK_C_FLAGS -Werror=comment)
-    overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=comment)
-  elseif(CMAKE_C_COMPILER_ID MATCHES "Clang")
-    overlook_list_append(OVERLOOK_C_FLAGS -Werror=comment)
-    overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=comment)
-  endif()
-endif()
+
+#--------------------------------------------------------------------------------
+# Unused stuffs related
+#--------------------------------------------------------------------------------
 
 # rule27: 没有使用到表达式结果（无用代码行，应删除）
 # 感觉容易被误伤，可以考虑关掉
@@ -465,6 +385,38 @@ if(OVERLOOK_ENABLE_RULE28)
   endif()
 endif()
 
+# rule26: 单行注释包含行继续符
+# 可能会导致下一行代码报错，而问题根源在包含继续符的这行注释
+if(OVERLOOK_ENABLE_RULE26)
+  if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
+    overlook_list_append(OVERLOOK_C_FLAGS /we4006)
+    overlook_list_append(OVERLOOK_CXX_FLAGS /we4006)
+  elseif(CMAKE_C_COMPILER_ID MATCHES "GNU")
+    overlook_list_append(OVERLOOK_C_FLAGS -Werror=comment)
+    overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=comment)
+  elseif(CMAKE_C_COMPILER_ID MATCHES "Clang")
+    overlook_list_append(OVERLOOK_C_FLAGS -Werror=comment)
+    overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=comment)
+  endif()
+endif()
+
+
+#--------------------------------------------------------------------------------
+# String/Char related
+#--------------------------------------------------------------------------------
+
+# rule22: 不可识别的字符转义序列
+# GCC5.4 能显示 warning 但无别名，因而无法视为 error
+if(OVERLOOK_ENABLE_RULE22)
+  if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
+    overlook_list_append(OVERLOOK_C_FLAGS /we4129)
+    overlook_list_append(OVERLOOK_CXX_FLAGS /we4129)
+  elseif(CMAKE_C_COMPILER_ID MATCHES "Clang")
+    overlook_list_append(OVERLOOK_C_FLAGS -Werror=unknown-escape-sequence)
+    overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=unknown-escape-sequence)
+  endif()
+endif()
+
 # rule29: C++中，禁止把字符串常量赋值给 char* 变量
 # VS2019 开启 /Wall 后也查不到
 if(OVERLOOK_ENABLE_RULE29)
@@ -480,15 +432,6 @@ if(OVERLOOK_ENABLE_RULE29)
   endif()
 endif()
 
-# rule30: 所有的控件路径(if/else)必须都有返回值
-# NDK21 Clang / Linux Clang/GCC/G++ 默认都报 error
-if(OVERLOOK_ENABLE_RULE30)
-  if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
-    overlook_list_append(OVERLOOK_C_FLAGS /we4715)
-    overlook_list_append(OVERLOOK_CXX_FLAGS /we4715)
-  endif()
-endif()
-
 # rule31: multi-char constant
 # MSVC 没有对应的选项
 if(OVERLOOK_ENABLE_RULE31)
@@ -501,15 +444,10 @@ if(OVERLOOK_ENABLE_RULE31)
   endif()
 endif()
 
-# rule32: 用 memset 等 C 函数设置 非 POD class 对象
-# Linux下, GCC9.3 能发现此问题, 但clang10 不能发现
-if(OVERLOOK_ENABLE_RULE32)
-  if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-    if(CMAKE_CXX_COMPILER_VERSION GREATER 7.5)
-      overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=class-memaccess)
-    endif()
-  endif()
-endif()
+
+#--------------------------------------------------------------------------------
+# Misc
+#--------------------------------------------------------------------------------
 
 ## rule33: 括号里面是单个等号而不是双等号
 # Linux Clang14 可以发现问题，但 GCC9.3 无法发现; android clang 可以发现
@@ -520,14 +458,6 @@ if(OVERLOOK_ENABLE_RULE33)
   endif()
 endif()
 
-## rule34: double 型转 float 型，可能有精度丢失（尤其在 float 较大时）
-# MSVC 默认是放在 /W3
-if(OVERLOOK_ENABLE_RULE34)
-  if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
-    overlook_list_append(OVERLOOK_C_FLAGS /we4244)
-    overlook_list_append(OVERLOOK_CXX_FLAGS /we4244)
-  endif()
-endif()
 
 ## rule35: 父类有 virtual 的成员函数，但析构函数是 public 并且不是 virtual, 会导致 UB
 # https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#c35-a-base-class-destructor-should-be-either-public-and-virtual-or-protected-and-non-virtual
@@ -554,9 +484,64 @@ if(OVERLOOK_ENABLE_RULE36)
   endif()
 endif()
 
+
+#--------------------------------------------------------------------------------
+# Usually false positive type casting/conversions
+#--------------------------------------------------------------------------------
+
+if (0)
+  # rule5: 避免使用影子(shadow)变量
+  # 有时候会误伤, 例如eigen等开源项目, 可以手动关掉
+  if(OVERLOOK_ENABLE_RULE5)
+    if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
+      overlook_list_append(OVERLOOK_C_FLAGS /we6244 /we6246 /we4457 /we4456)
+      overlook_list_append(OVERLOOK_CXX_FLAGS /we6244 /we6246 /we4457 /we4456)
+    else()
+      overlook_list_append(OVERLOOK_C_FLAGS -Werror=shadow)
+      overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=shadow)
+    endif()
+  endif()
+
+  # rule9: 避免把 unsigned int 和 int 直接比较
+  # 通常会误伤，例如 for 循环中。可以考虑关掉
+  if(OVERLOOK_ENABLE_RULE9)
+    if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
+      overlook_list_append(OVERLOOK_C_FLAGS /we4018)
+      overlook_list_append(OVERLOOK_CXX_FLAGS /we4018)
+    elseif(CMAKE_C_COMPILER_ID MATCHES "GNU")
+      overlook_list_append(OVERLOOK_C_FLAGS -Werror=sign-compare)
+      overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=sign-compare)
+    elseif(CMAKE_C_COMPILER_ID MATCHES "Clang")
+      overlook_list_append(OVERLOOK_C_FLAGS -Werror=sign-compare)
+      overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=sign-compare)
+    endif()
+  endif()
+
+  # rule20: size_t 类型被转为更窄类型
+  # VC/VC++ 特有。 Linux 下的 gcc/clang 没有
+  # 有点过于严格了
+  if(OVERLOOK_ENABLE_RULE20)
+    if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
+      overlook_list_append(OVERLOOK_C_FLAGS /we4267)
+      overlook_list_append(OVERLOOK_CXX_FLAGS /we4267)
+    endif()
+  endif()
+
+  ## rule34: double 型转 float 型，可能有精度丢失（尤其在 float 较大时）
+  # MSVC 默认是放在 /W3
+  if(OVERLOOK_ENABLE_RULE34)
+    if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
+      overlook_list_append(OVERLOOK_C_FLAGS /we4244)
+      overlook_list_append(OVERLOOK_CXX_FLAGS /we4244)
+    endif()
+  endif()
+
+endif()
+
+
 # 将上述定制的 FLAGS 追加到 CMAKE 默认的编译选项中
 # 为什么是添加而不是直接设定呢？因为 xxx-toolchain.cmake 中可能会设置一些默认值 (如 Android NDK), 需要避免这些默认值被覆盖
-if(OVERLOOK_FLAGS_GLOBAL)
+if(OVERLOOK_APPLY_FLAGS_GLOBAL)
   overlook_list_append(CMAKE_C_FLAGS "${OVERLOOK_C_FLAGS}")
   overlook_list_append(CMAKE_CXX_FLAGS "${OVERLOOK_CXX_FLAGS}")
 endif()
