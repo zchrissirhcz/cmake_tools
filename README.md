@@ -7,8 +7,29 @@ Overlook: a cmake plugin for safer c/c++ programming.
 
 ## Introduction
 
-[overlook.cmake](overlook.cmake) selects C/C++ warnings that are easy to ignore but are serious, and advances detection and reporting to compile time by treating them as errors. It helps people write safer code, avoiding abnormal results that can be compiled and linked but run.
+[overlook.cmake](overlook.cmake) collects 30+ warnings, mark them as errors, help you found bugs when compile C/C++ code.
 
+## Usage
+
+Download [overlook.cmake](https://github.com/zchrissirhcz/overlook/blob/main/overlook.cmake) and included it in `CMakeLists.txt`:
+
+```cmake
+include("overlook.cmake")  # Done. So easy!
+```
+
+Alternatively, if you don't want globally enable overlook, you may apply it for specific target:
+
+```cmake
+set(OVERLOOK_APPLY_FLAGS_GLOBAL OFF)
+include("overlook.cmake")
+target_compile_options(your_target_name
+  PRIVATE # or PUBLIC
+  ${OVERLOOK_CXX_FLAGS} # C++
+  # ${OVERLOOK_C_FLAGS} # C
+)
+```
+
+Then compile your projec as usual, it will report bugs more seriously thanks to overlook.
 
 ## Purpose
 
@@ -30,24 +51,6 @@ In [overlook.cmake](overlook.cmake), there are **36 serious compilation warnings
 - Trap(caused by missing return value)
 
 These severe bugs can not be inspected by famous tools like AddressSanitizer, Valgrind, VLD, but [overlook.cmake](overlook.cmake) can. People may also use [clang-tidy](https://clang.llvm.org/extra/clang-tidy/), which will report more compile warnings (instead of compile errors).
-
-## Usage
-
-**Globally**
-```cmake
-include("overlook.cmake")  # ! Put this line in the end of your Root CMakeLists.txt
-```
-
-**Or, Per-target**
-```cmake
-set(OVERLOOK_FLAGS_GLOBAL OFF)
-include("overlook.cmake")
-target_compile_options(your_target_name
-    PRIVATE # or PUBLIC
-    ${OVERLOOK_CXX_FLAGS} # for C++
-    # ${OVERLOOK_C_FLAGS} for C
-)
-```
 
 
 ## ♥️ Thanks
@@ -91,16 +94,7 @@ If you're using Overlook, but it seems not work, possible cases:
 
 ## What about Makefile?
 
-Go to [makefiles](makefiles/README.md) directory for details.
-
-
-## What about Visual Studio?
-
-You can generate Visual Studio Solution (.sln) via either:
-- cmake command line: `cmake -G "Visual Studio 17 2022" -A x64 /directory/that/contains/CMakeLists.txt`
-- cmake-gui
-
-You may also directly open an cmake-based C/C++ project via VS2015/VS2017/VS2019/VS2022.
+See [makefiles](makefiles/README.md).
 
 ## References
 
