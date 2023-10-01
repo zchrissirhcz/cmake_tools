@@ -7,7 +7,9 @@
 #
 ###############################################################
 
-cmake_minimum_required(VERSION 3.5)
+# GREATER_EQUAL New in version 3.7.
+
+cmake_minimum_required(VERSION 3.7)
 
 # Only included once
 if(OVERLOOK_INCLUDE_GUARD)
@@ -16,7 +18,7 @@ endif()
 set(OVERLOOK_INCLUDE_GUARD TRUE)
 set(OVERLOOK "${CMAKE_CURRENT_LIST_FILE}")
 
-set(OVERLOOK_VERSION "2023.09.28")
+set(OVERLOOK_VERSION "2023.10.01")
 
 option(OVERLOOK_APPLY_FLAGS_GLOBAL "Apply overlook globally?" ON)
 option(OVERLOOK_VERBOSE            "Verbose output?"          OFF)
@@ -85,9 +87,16 @@ elseif(CMAKE_C_COMPILER_ID MATCHES "GNU")
   if(CMAKE_CXX_COMPILER_VERSION LESS 9.1)
     overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=implicit-function-declaration)
   endif()
+  if(CMAKE_C_COMPILER_VERSION GREATER_EQUAL 11.1)
+    overlook_list_append(OVERLOOK_C_FLAGS -Werror=builtin-declaration-mismatch)
+  endif()
 elseif(CMAKE_C_COMPILER_ID MATCHES "Clang")
   overlook_list_append(OVERLOOK_C_FLAGS -Werror=implicit-function-declaration)
   overlook_list_append(OVERLOOK_CXX_FLAGS -Werror=implicit-function-declaration)
+endif()
+
+# rulex
+if(CMAKE_C_COMPILER_ID MATCHES "GNU")
 endif()
 
 # rule2: 函数虽然有声明，但是声明不完整，没有写出返回值类型，C编译器默认不报错，改为强制报错
