@@ -81,7 +81,6 @@ You may override the following options:
 
 ```cmake
 option(OVERLOOK_APPLY_FLAGS_GLOBAL "Apply overlook globally?" ON)
-option(OVERLOOK_VERBOSE            "Verbose output?"          OFF)
 ```
 
 ## Debugging

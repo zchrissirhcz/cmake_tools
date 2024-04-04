@@ -7,9 +7,7 @@
 #
 ###############################################################
 
-# GREATER_EQUAL New in version 3.7.
-
-cmake_minimum_required(VERSION 3.7)
+cmake_minimum_required(VERSION 3.20)
 
 # Only included once
 if(OVERLOOK_INCLUDE_GUARD)
@@ -18,13 +16,39 @@ endif()
 set(OVERLOOK_INCLUDE_GUARD TRUE)
 set(OVERLOOK "${CMAKE_CURRENT_LIST_FILE}")
 
-set(OVERLOOK_VERSION "2023.10.01")
+set(OVERLOOK_VERSION "2024.04.04")
 
 option(OVERLOOK_APPLY_FLAGS_GLOBAL "Apply overlook globally?" ON)
 option(OVERLOOK_VERBOSE            "Verbose output?"          OFF)
 
 set(OVERLOOK_C_FLAGS "")
 set(OVERLOOK_CXX_FLAGS "")
+
+##############################################################
+# Logging functions
+###############################################################
+
+function(overlook_debug)
+  if(overlook_VERBOSE GREATER 2)
+    message(STATUS "OVERLOOK/D: ${ARGN}")
+  endif()
+endfunction()
+
+function(overlook_echo)
+  if(overlook_VERBOSE GREATER 1)
+    message(STATUS "OVERLOOK/I: ${ARGN}")
+  endif()                                                                                                                                                       endfunction()
+
+function(overlook_warn)
+  if(overlook_VERBOSE GREATER 0)
+    message(STATUS "OVERLOOK/W: ${ARGN}")
+  endif()
+endfunction()
+
+function(overlook_error)
+  string(REPLACE "\n;" "\n" ARGN "${ARGN}")
+  message(FATAL_ERROR "OVERLOOK/E: ${ARGN}")
+endfunction()
 
 # Append element to list with space as seperator
 function(overlook_list_append __string __element)
@@ -57,8 +81,8 @@ endif()
 
 # Project LANGUAGE not including C and CXX so we return
 if((NOT OVERLOOK_WITH_C) AND (NOT OVERLOOK_WITH_CXX))
-  message("OVERLOOK/W: Neither C nor CXX compilers available. No OVERLOOK C/C++ flags will be set")
-  message("  NOTE: You many consider add C and CXX in `project()` command")
+  overlook_warn("Neither C nor CXX compiler available. No OVERLOOK C/C++ flags will be set")
+  overlook_warn("You may specify C and CXX in `project()` command")
   return()
 endif()
 
@@ -66,10 +90,10 @@ endif()
 # If `-w` specified for GCC/Clang, report an error
 if((CMAKE_C_COMPILER_ID MATCHES "GNU") OR (CMAKE_C_COMPILER_ID MATCHES "Clang"))
   get_directory_property(overlook_detected_global_compile_options COMPILE_OPTIONS)
-  message(STATUS "Overlook Detected Global Compile Options: ${overlook_detected_global_compile_options}")
+  overlook_echo("Detected Global Compile Options: ${overlook_detected_global_compile_options}")
   string(REGEX MATCH "-w" ignore_all_warnings "${overlook_detected_global_compile_options}" )
   if(ignore_all_warnings)
-    message(FATAL_ERROR "OverLook won't work due to `-w` found in compile options. Consider remove it (in `add_compile_options)`")
+    overlook_error("Found `-w` compile options, it ignore all warnings. Please remove it (in `add_compile_options)`")
   endif()
 endif()
 
@@ -481,10 +505,8 @@ if(OVERLOOK_APPLY_FLAGS_GLOBAL)
   overlook_list_append(CMAKE_CXX_FLAGS "${OVERLOOK_CXX_FLAGS}")
 endif()
 
-if(OVERLOOK_VERBOSE)
-  message(STATUS "OVERLOOK_C_FLAGS are: ${OVERLOOK_C_FLAGS}")
-  message(STATUS "OVERLOOK_CXX_FLAGS are: ${OVERLOOK_CXX_FLAGS}")
-endif()
+overlook_debug("OVERLOOK_C_FLAGS: ${OVERLOOK_C_FLAGS}")
+overlook_debug("OVERLOOK_CXX_FLAGS: ${OVERLOOK_CXX_FLAGS}")
 
 
 ##################################################################################
@@ -502,7 +524,7 @@ function(overlook_add_whole_archive_flag lib output_var)
     if(MSVC_VERSION GREATER 1900)
       set(${output_var} -WHOLEARCHIVE:$<TARGET_FILE:${lib}> PARENT_SCOPE)
     else()
-      message(WARNING "MSVC version is ${MSVC_VERSION}, /WHOLEARCHIVE flag cannot be set")
+      overlook_warn("MSVC version is ${MSVC_VERSION}, /WHOLEARCHIVE flag cannot be set")
       set(${output_var} ${lib} PARENT_SCOPE)
     endif()
   elseif("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
@@ -515,7 +537,7 @@ function(overlook_add_whole_archive_flag lib output_var)
     # 即使是 NDK21 并且手动传入 ANDROID_LD=lld, 依然要用ld的查重复符号的链接选项
     set(${output_var} -Wl,--whole-archive ${lib} -Wl,--no-whole-archive PARENT_SCOPE)
   else()
-    message(FATAL_ERROR ">>> add_whole_archive_flag not supported yet for current compiler: ${CMAKE_CXX_COMPILER_ID}")
+    overlook_error("add_whole_archive_flag not supported yet for current compiler: ${CMAKE_CXX_COMPILER_ID}")
   endif()
 endfunction()
 
@@ -536,11 +558,8 @@ function(overlook_apply_cppcheck targetName)
   # collecting absolute paths for each source file in the given target
   get_target_property(target_sources ${targetName} SOURCES)
   get_target_property(target_source_dir ${targetName} SOURCE_DIR)
-  # message(STATUS "target_source_dir: ${target_source_dir}")
-  # message(STATUS "target_sources:")
   set(src_path_lst "")
   foreach(target_source ${target_sources})
-    # message(STATUS "   ${target_source}")
     if(IS_ABSOLUTE ${target_source})
       set(target_source_absolute_path ${target_source})
     else()
