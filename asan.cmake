@@ -1,6 +1,6 @@
 # Author: Zhuo Zhang <imzhuo@foxmail.com>
 # Homepage: https://github.com/zchrissirhcz/cmake_tools
-# Last update: 2024-05-26 23:30:00
+# Last update: 2024-06-01 15:49:00
 
 if(ASAN_INCLUDE_GUARD)
   return()
@@ -58,6 +58,15 @@ if(ASAN_AVAILABLE)
         message(STATUS ">>> VS2022_ASAN_DISABLE_STRING_ANNOTATION: YES")
       else()
         message(STATUS ">>> VS2022_ASAN_DISABLE_STRING_ANNOTATION: NO")
+      endif()
+    endif()
+
+    # https://devblogs.microsoft.com/cppblog/msvc-address-sanitizer-one-dll-for-all-runtime-configurations/
+    if((CMAKE_C_COMPILER_VERSION STRGREATER_EQUAL 17.7) OR (CMAKE_CXX_COMPILER_VERSION STRGREATER_EQUAL 17.7))
+      if(CMAKE_GENERATOR_PLATFORM MATCHES "x64" OR CMAKE_SIZEOF_VOID_P EQUAL 8)
+        set(CMAKE_VS_DEBUGGER_ENVIRONMENT "PATH=$(VC_ExecutablePath_x64);%PATH%")
+      elseif (CMAKE_GENERATOR_PLATFORM MATCHES "Win32" OR CMAKE_SIZEOF_VOID_P EQUAL 4)
+        set(CMAKE_VS_DEBUGGER_ENVIRONMENT "PATH=$(VC_ExecutablePath_x86);%PATH%")
       endif()
     endif()
 
