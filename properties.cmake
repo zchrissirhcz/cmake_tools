@@ -1,12 +1,15 @@
 # Author: Zhuo Zhang <imzhuo@foxmail.com>
 # Homepage: https://github.com/zchrissirhcz/cmake_tools
-# Last update: 2024-05-26 23:30:00
+# Last update: 2024-06-01 16:00:00
 #
 # Usage:
 # print_target_properties(opencv_core)
+# print_directory_properties(.)
+# print_global_properties()
+#
 
 function(print_target_properties TARGET)
-  message("target: ${TARGET}")
+  message("target properties for ${TARGET}")
   
   set(prop_lst 
     ADDITIONAL_CLEAN_FILES
@@ -417,6 +420,110 @@ function(print_target_properties TARGET)
     # get_target_property(${prop} ${TARGET} ${prop})
     # message(" ${prop}: ${${prop}}")
     get_target_property(prop_value ${TARGET} ${prop})
+    if(prop_value)
+      message(" ${prop}: ${prop_value}")
+    endif()
+  endforeach()
+endfunction()
+
+
+function(print_directory_properties DIRECTORY)
+  message("directory properties for ${DIRECTORY}")
+  
+  set(prop_lst
+    ADDITIONAL_CLEAN_FILES
+    BINARY_DIR
+    BUILDSYSTEM_TARGETS
+    CACHE_VARIABLES
+    CLEAN_NO_CUSTOM
+    CMAKE_CONFIGURE_DEPENDS
+    COMPILE_DEFINITIONS
+    COMPILE_OPTIONS
+    DEFINITIONS
+    EXCLUDE_FROM_ALL
+    IMPLICIT_DEPENDS_INCLUDE_TRANSFORM
+    IMPORTED_TARGETS
+    INCLUDE_DIRECTORIES
+    INCLUDE_REGULAR_EXPRESSION
+    LABELS
+    LINK_DIRECTORIES
+    LINK_OPTIONS
+    LISTFILE_STACK
+    MACROS
+    PARENT_DIRECTORY
+    RULE_LAUNCH_COMPILE
+    RULE_LAUNCH_CUSTOM
+    RULE_LAUNCH_LINK
+    SOURCE_DIR
+    SUBDIRECTORIES
+    SYSTEM
+    TESTS
+    TEST_INCLUDE_FILES
+    VARIABLES
+    VS_GLOBAL_SECTION_POST_<section>
+    VS_GLOBAL_SECTION_PRE_<section>
+    VS_STARTUP_PROJECT
+  )
+  foreach(prop ${prop_lst})
+    get_directory_property(prop_value
+      DIRECTORY ${DIRECTORY}
+      ${prop}
+    )
+    if(prop_value)
+      message(" ${prop}: ${prop_value}")
+    endif()
+  endforeach()
+endfunction()
+
+function(print_global_properties)
+  message("global properties:")
+  set(prop_lst
+    ALLOW_DUPLICATE_CUSTOM_TARGETS
+    AUTOGEN_SOURCE_GROUP
+    AUTOGEN_TARGETS_FOLDER
+    AUTOMOC_SOURCE_GROUP
+    AUTOMOC_TARGETS_FOLDER
+    AUTORCC_SOURCE_GROUP
+    AUTOUIC_SOURCE_GROUP
+    CMAKE_C_KNOWN_FEATURES
+    CMAKE_CUDA_KNOWN_FEATURES
+    CMAKE_CXX_KNOWN_FEATURES
+    CMAKE_ROLE
+    DEBUG_CONFIGURATIONS
+    DISABLED_FEATURES
+    ECLIPSE_EXTRA_CPROJECT_CONTENTS
+    ECLIPSE_EXTRA_NATURES
+    ENABLED_FEATURES
+    ENABLED_LANGUAGES
+    FIND_LIBRARY_USE_LIB32_PATHS
+    FIND_LIBRARY_USE_LIB64_PATHS
+    FIND_LIBRARY_USE_LIBX32_PATHS
+    FIND_LIBRARY_USE_OPENBSD_VERSIONING
+    GENERATOR_IS_MULTI_CONFIG
+    GLOBAL_DEPENDS_DEBUG_MODE
+    GLOBAL_DEPENDS_NO_CYCLES
+    IN_TRY_COMPILE
+    JOB_POOLS
+    PACKAGES_FOUND
+    PACKAGES_NOT_FOUND
+    PREDEFINED_TARGETS_FOLDER
+    REPORT_UNDEFINED_PROPERTIES
+    RULE_LAUNCH_COMPILE
+    RULE_LAUNCH_CUSTOM
+    RULE_LAUNCH_LINK
+    RULE_MESSAGES
+    TARGET_ARCHIVES_MAY_BE_SHARED_LIBS
+    TARGET_MESSAGES
+    TARGET_SUPPORTS_SHARED_LIBS
+    USE_FOLDERS
+    XCODE_EMIT_EFFECTIVE_PLATFORM_NAME
+  )
+
+  foreach(prop ${prop_lst})
+    get_property(prop_value
+      GLOBAL
+      PROPERTY DEBUG_CONFIGURATIONS
+    )
     if(prop_value)
       message(" ${prop}: ${prop_value}")
     endif()
