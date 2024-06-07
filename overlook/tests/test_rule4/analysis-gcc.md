@@ -1,4 +1,4 @@
-# Analysis of missing return value for non-void function
+# Analysis of missing return value for non-void function, GCC compiler
 
 ## Preparation
 - The code and compiler information can be obtained in: https://godbolt.org/z/1GdKb7dc9

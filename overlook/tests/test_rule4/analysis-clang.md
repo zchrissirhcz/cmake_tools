@@ -1,4 +1,4 @@
-# Analysis of missing return value for non-void function
+# Analysis of missing return value for non-void function, Clang compiler
 
 ## Preparation
 Let's analysis why there is "crash" when missing return value for non-void function.
