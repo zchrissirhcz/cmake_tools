@@ -8,7 +8,7 @@ Overlook: a cmake plugin for safer c/c++ programming.
 
 ## Usage
 
-Download [overlook.cmake](https://github.com/zchrissirhcz/overlook/blob/main/overlook.cmake) and included it in `CMakeLists.txt`, enable its compile options at your required level:
+Download [overlook.cmake](https://github.com/zchrissirhcz/cmake_tools/blob/main/overlook/overlook.cmake) and included it in `CMakeLists.txt`, enable its compile options at your required level:
 
 ### Case1: enable overlook globally
 
