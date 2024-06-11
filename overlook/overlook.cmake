@@ -20,9 +20,9 @@ set(OVERLOOK_CXX_COMPILE_OPTIONS)
 
 # Print overlook information
 message("----------------------------------------------------------")
-message("  Overlook: a cmake plugin for safer C/C++ programming    ")
+message("  Overlook: a cmake tool for safer C/C++ programming      ")
 message("  Author  : Zhuo Zhang (imzhuo@foxmail.com)               ")
-message("  Homepage: https://github.com/zchrissirhcz/overlook      ")
+message("  Homepage: https://github.com/zchrissirhcz/cmake_tools   ")
 message("  Version : ${OVERLOOK_VERSION}                           ")
 message("----------------------------------------------------------")
 
