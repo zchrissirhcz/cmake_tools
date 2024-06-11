@@ -1,6 +1,9 @@
 # Author: Zhuo Zhang <imzhuo@foxmail.com>
 # Homepage: https://github.com/zchrissirhcz/cmake_tools
-# Last update: 2024-06-01 16:00:00
+# Last update: 2024-05-26 23:30:00
+cmake_minimum_required(3.15)
+include_guard()
+
 #
 # Usage:
 # print_target_properties(opencv_core)

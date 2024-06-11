@@ -1,14 +1,11 @@
 # Author: Zhuo Zhang <imzhuo@foxmail.com>
 # Homepage: https://github.com/zchrissirhcz/cmake_tools
-# Last update: 2024-05-26 23:30:00
+# Last update: 2024-06-12 00:00:00
+cmake_minimum_required(3.15)
+include_guard()
 
 # Enables use of dynamically linked CRT
 # i.e. use MD / MDd
-
-if(MSVC_DYNAMIC_CRT_INCLUDE_GUARD)
-  return()
-endif()
-set(MSVC_DYNAMIC_CRT_INCLUDE_GUARD 1)
 
 # 设置策略CMP0091为NEW，新策略
 if (POLICY CMP0091)

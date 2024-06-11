@@ -1,4 +1,4 @@
-# ###############################################################
+###############################################################
 #
 # Overlook: a cmake plugin for safer c/c++ programming.
 #
@@ -8,15 +8,11 @@
 ###############################################################
 
 cmake_minimum_required(VERSION 3.20)
+include_guard()
 
-# Only included once
-if(OVERLOOK_INCLUDE_GUARD)
-  return()
-endif()
-set(OVERLOOK_INCLUDE_GUARD TRUE)
 set(OVERLOOK "${CMAKE_CURRENT_LIST_FILE}")
 
-set(OVERLOOK_VERSION "2024.06.07")
+set(OVERLOOK_VERSION "2024.06.12")
 option(OVERLOOK_GLOBAL "Apply overlook globally?" ON)
 
 set(OVERLOOK_C_COMPILE_OPTIONS)

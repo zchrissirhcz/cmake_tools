@@ -1,14 +1,11 @@
 # Author: Zhuo Zhang <imzhuo@foxmail.com>
 # Homepage: https://github.com/zchrissirhcz/cmake_tools
 # Last update: 2024-05-26 23:30:00
+cmake_minimum_required(3.15)
+include_guard()
 
 # Enables use of statically linked CRT for statically linked target
 # i.e. use MT / MTd
-
-if(MSVC_STATIC_CRT_INCLUDE_GUARD)
-  return()
-endif()
-set(MSVC_STATIC_CRT_INCLUDE_GUARD 1)
 
 if(MSVC)
   message(STATUS ">>> USE_MSVC_STATIC_CRT: YES")

@@ -1,6 +1,8 @@
 # Author: Zhuo Zhang <imzhuo@foxmail.com>
 # Homepage: https://github.com/zchrissirhcz/cmake_tools
 # Last update: 2024-05-26 23:30:00
+cmake_minimum_required(3.15)
+include_guard()
 
 # cmake's -j or --parallel option does not work for msbuild
 # let's do parallel build by pasing /MP to cl.exe

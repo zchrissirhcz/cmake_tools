@@ -1,11 +1,8 @@
 # Author: Zhuo Zhang <imzhuo@foxmail.com>
 # Homepage: https://github.com/zchrissirhcz/cmake_tools
-# Last update: 2024-06-01 15:49:00
-
-if(ASAN_INCLUDE_GUARD)
-  return()
-endif()
-set(ASAN_INCLUDE_GUARD 1)
+# Last update: 2024-06-12 00:00:00
+cmake_minimum_required(3.15)
+include_guard()
 
 option(VS2022_ASAN_DISABLE_VECTOR_ANNOTATION "Disable string annotation for VS2022 ASan?" ON)
 option(VS2022_ASAN_DISABLE_STRING_ANNOTATION "Disable vector annotation for VS2022 ASan?" ON)

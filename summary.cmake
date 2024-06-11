@@ -1,12 +1,10 @@
 # Author: Zhuo Zhang <imzhuo@foxmail.com>
 # Homepage: https://github.com/zchrissirhcz/cmake_tools
 # Last update: 2024-05-26 23:30:00
+cmake_minimum_required(3.15)
+include_guard()
 
-if(SUMMARY_INCLUDE_GUARD)
-  return()
-endif()
-set(SUMMARY_INCLUDE_GUARD 1)
-set(SUMMARY_VERSION "2023-09-28 23:18:08")
+set(SUMMARY_VERSION "2024-06-12 00:00:00")
 
 message("================================================================================")
 message("  CMake Configure Summary    ")

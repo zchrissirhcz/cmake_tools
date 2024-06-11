@@ -1,11 +1,8 @@
 # Author: Zhuo Zhang <imzhuo@foxmail.com>
 # Homepage: https://github.com/zchrissirhcz/cmake_tools
-# Last update: 2024-05-26 23:30:00
-
-if(LLDB_DEBUG_INCLUDE_GUARD)
-  return()
-endif()
-set(LLDB_DEBUG_INCLUDE_GUARD 1)
+# Last update: 2024-06-12 00:00:00
+cmake_minimum_required(3.15)
+include_guard()
 
 if((CMAKE_C_COMPILER_ID MATCHES "Clang") OR (CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
   set(lldb_required_debug_flag -g -fstandalone-debug)

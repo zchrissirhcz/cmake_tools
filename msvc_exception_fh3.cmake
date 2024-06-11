@@ -1,6 +1,8 @@
 # Author: Zhuo Zhang <imzhuo@foxmail.com>
 # Homepage: https://github.com/zchrissirhcz/cmake_tools
 # Last update: 2024-05-26 23:30:00
+cmake_minimum_required(3.15)
+include_guard()
 
 # Scenario:
 # - build an library `hello` with VS2019 >= 16.3 (or VS2022), which uses Frame Handler 4 on default
@@ -8,11 +10,6 @@
 # - then comes link error: unresolved external symbol __CxxFrameHandler4
 # For a full example, see https://github.com/zchrissirhcz/min-repros/tree/master/test_GS_EHsc_link_error
 #
-
-if(MSVC_EXCEPTION_FH3_INCLUDE_GUARD)
-  return()
-endif()
-set(MSVC_EXCEPTION_FH3_INCLUDE_GUARD 1)
 
 option(USE_COMPATIBLE_FRAME_HANDLER_FOR_VS "Switch off FH4 feature(then use FH3) for compatibility?" ON)
 

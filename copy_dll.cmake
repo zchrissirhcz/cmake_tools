@@ -1,11 +1,8 @@
 # Author: Zhuo Zhang <imzhuo@foxmail.com>
 # Homepage: https://github.com/zchrissirhcz/cmake_tools
-# Last update: 2024-05-26 23:30:00
-
-if(COPY_DLL_INCLUDE_GUARD)
-  return()
-endif()
-set(COPY_DLL_INCLUDE_GUARD 1)
+# Last update: 2024-06-12 00:00:00
+cmake_minimum_required(3.15)
+include_guard()
 
 function(copy_target_dll targetName dstDir)
   set(prop_lst "IMPORTED_LOCATION;IMPORTED_LOCATION_DEBUG;IMPORTED_LOCATION_RELEASE")

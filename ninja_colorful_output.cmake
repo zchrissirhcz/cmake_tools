@@ -1,16 +1,13 @@
 # Author: Zhuo Zhang <imzhuo@foxmail.com>
 # Homepage: https://github.com/zchrissirhcz/cmake_tools
 # Last update: 2024-05-26 23:30:00
+cmake_minimum_required(3.15)
+include_guard()
 
 # When building a CMake-based project, Ninja may speedup the building speed, comparing to Make.
 # However, with `-GNinja` specified, compile errors are with no obvious colors.
 # This cmake plugin just solve this mentioned problem, giving colorful output for Ninja.
 ## References: https://medium.com/@alasher/colored-c-compiler-output-with-ninja-clang-gcc-10bfe7f2b949
-
-if(NINJA_COLORFUL_OUTPUT_INCLUDE_GUARD)
-  return()
-endif()
-set(NINJA_COLORFUL_OUTPUT_INCLUDE_GUARD 1)
 
 option(NINJA_COLORFUL_OUTPUT "Always produce ANSI-colored output (GNU/Clang only)." ON)
 

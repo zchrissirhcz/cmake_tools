@@ -1,11 +1,8 @@
 # Author: Zhuo Zhang <imzhuo@foxmail.com>
 # Homepage: https://github.com/zchrissirhcz/cmake_tools
 # Last update: 2024-05-26 23:30:00
-
-if(OUTPUT_DIR2_INCLUDE_GUARD)
-  return()
-endif()
-set(OUTPUT_DIR2_INCLUDE_GUARD 1)
+cmake_minimum_required(3.15)
+include_guard()
 
 # https://stackoverflow.com/questions/543203/cmake-runtime-output-directory-on-windows
 

@@ -1,14 +1,8 @@
-###############################################################
-#
-# cppcheck, 开启静态代码检查, 主要是检查编译器检测不到的UB
-#   注: 目前只有终端下能看到对应输出，其中 NDK 下仅第一次输出
-#
-###############################################################
-
-if(CPPCHECK_INCLUDE_GUARD)
-  return()
-endif()
-set(CPPCHECK_INCLUDE_GUARD 1)
+# Author: Zhuo Zhang <imzhuo@foxmail.com>
+# Homepage: https://github.com/zchrissirhcz/cmake_tools
+# Last update: 2024-06-12 00:00:00
+cmake_minimum_required(3.15)
+include_guard()
 
 # Usage:
 # add_executable(hello hello.cpp)
