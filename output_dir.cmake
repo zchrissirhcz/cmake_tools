@@ -1,7 +1,7 @@
 # Author: Zhuo Zhang <imzhuo@foxmail.com>
 # Homepage: https://github.com/zchrissirhcz/cmake_tools
 # Last update: 2024-05-26 23:30:00
-cmake_minimum_required(3.15)
+cmake_minimum_required(VERSION 3.15)
 include_guard()
 
 # Save libs and executables in the same directory

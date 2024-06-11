@@ -9,7 +9,7 @@
 # include(clang-tidy.cmake)
 # cvpkg_apply_clang_tidy(${your_target})
 
-cmake_minimum_required(3.15)
+cmake_minimum_required(VERSION 3.15)
 include_guard()
 
 if(ANDROID AND (CMAKE_SYSTEM_NAME MATCHES "Windows"))
