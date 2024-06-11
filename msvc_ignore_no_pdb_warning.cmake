@@ -5,6 +5,7 @@ cmake_minimum_required(VERSION 3.15)
 include_guard()
 
 #set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "/ignore:4099")
-if(CMAKE_SYSTEM_NAME MATCHES "Windows")
-  add_link_options("/ignore:4099")
-endif()
+add_link_options(
+  "$<$<COMPILE_LANG_AND_ID:C,MSVC>:/ignore:4099>"
+  "$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/ignore:4099>"
+)
