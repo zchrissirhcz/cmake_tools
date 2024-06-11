@@ -1,18 +1,25 @@
 # Author: Zhuo Zhang <imzhuo@foxmail.com>
 # Homepage: https://github.com/zchrissirhcz/cmake_tools
-# Last update: 2024-05-26 23:30:00
+# Last update: 2024-06-11 23:48:00
+cmake_minimum_required(VERSION 3.15)
+include_guard()
 
-if(WINDOWS_ENCODING_INCLUDE_GUARD)
-  return()
-endif()
-set(WINDOWS_ENCODING_INCLUDE_GUARD 1)
+# Set source file utf-8 encoding
+# This solves Visual Studio warning C4819
+add_compile_options(
+  "$<$<COMPILE_LANG_AND_ID:C,MSVC>:/source-charset:utf-8>"
+  "$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/source-charset:utf-8>"
+)
 
-if(CMAKE_C_COMPILER_ID STREQUAL "MSVC" OR CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-  # This solves Visual Studio warning C4819
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /source-charset:utf-8")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /source-charset:utf-8")
-
-  if(CMAKE_VERSION VERSION_LESS "3.24")
+# Set executable run with utf-8 encoding
+if(WIN32)
+  if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.24)
+    cmake_host_system_information(
+      RESULT CodePage
+      QUERY WINDOWS_REGISTRY "HKLM/SYSTEM/CurrentControlSet/Control/Nls/CodePage"
+      VALUE "ACP"
+    )
+  else()
     include(FindPythonInterp)
     execute_process(
       COMMAND ${PYTHON_EXECUTABLE} "${CMAKE_SOURCE_DIR}/cmake/QueryCodePage.py"
@@ -20,19 +27,11 @@ if(CMAKE_C_COMPILER_ID STREQUAL "MSVC" OR CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
       RESULT_VARIABLE ReturnCode
       OUTPUT_VARIABLE CodePage
     )
-  else() # CMake >= 3.24
-    cmake_host_system_information(
-      RESULT CodePage
-      QUERY WINDOWS_REGISTRY "HKLM/SYSTEM/CurrentControlSet/Control/Nls/CodePage"
-      VALUE "ACP"
+  endif()
+  if("${CodePage}" STREQUAL "936")
+    add_compile_options(
+      "$<$<COMPILE_LANG_AND_ID:C,MSVC>:/execution-charset:gbk>"
+      "$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/execution-charset:gbk>"
     )
   endif()
-
-  message(STATUS "CodePage is: ${CodePage}")
-  if("${CodePage}" STREQUAL "936")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /execution-charset:gbk")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /execution-charset:gbk")
-  endif()
-
-  set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} /bigobj")
 endif()
