@@ -37,7 +37,7 @@ Get a summary message for your current build, including global stuffs and list e
 include(summary.cmake)
 ```
 
-## windows_encoding.cmake
+## msvc_utf8_encoding.cmake
 
 When you write unicode chars (e.g. Chinese characters) in utf-8 encoding source files (.c/.cpp/.h/.hpp), and your command prompt use encodings like `/cp936` (due to OS language), it prints garbage. You may avoid that by specify encoding for source files and execution, separately. 
 
