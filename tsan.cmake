@@ -1,29 +1,14 @@
 # Author: Zhuo Zhang <imzhuo@foxmail.com>
 # Homepage: https://github.com/zchrissirhcz/cmake_tools
-# Last update: 2024-05-26 23:30:00
+# Last update: 2024-06-13 22:14:00
 cmake_minimum_required(VERSION 3.15)
 include_guard()
 
-# globally
-set(TSAN_AVAILABLE ON)
-if((CMAKE_C_COMPILER_ID STREQUAL "MSVC") OR (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-      OR ((MSVC AND ((CMAKE_C_COMPILER_ID STREQUAL "Clang") OR (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")))))
-  message(WARNING "Neither MSVC nor Clang-CL support thread sanitizer")
-  set(TSAN_AVAILABLE OFF)
-elseif((CMAKE_C_COMPILER_ID MATCHES "GNU") OR (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    OR (CMAKE_C_COMPILER_ID MATCHES "Clang") OR (CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
-  set(TSAN_OPTIONS -fsanitize=thread -fno-omit-frame-pointer -g)
-endif()
-
-if(TSAN_AVAILABLE)
-  message(STATUS ">>> USE_TSAN: YES")
-  add_compile_options(${TSAN_OPTIONS})
-  add_link_options(${TSAN_OPTIONS})
-else()
-  message(STATUS ">>> USE_TSAN: NO")
-endif()
-
-
-# per-target
-# target_compile_options(${TARGET} PUBLIC -fsanitize=thread -fno-omit-frame-pointer)
-# target_link_options(${TARGET} INTERFACE -fsanitize=thread)
+add_compile_options(
+  "$<$<COMPILE_LANG_AND_ID:C,GNU,Clang,AppleClang>:-fsanitize=thread;-fno-omit-frame-pointer;-g>"
+  "$<$<COMPILE_LANG_AND_ID:CXX,GNU,Clang,AppleClang>:-fsanitize=thread;-fno-omit-frame-pointer;-g>"
+)
+add_link_options(
+  "$<$<COMPILE_LANG_AND_ID:C,GNU,Clang,AppleClang>:-fsanitize=thread>"
+  "$<$<COMPILE_LANG_AND_ID:CXX,GNU,Clang,AppleClang>:-fsanitize=thread>"
+)
