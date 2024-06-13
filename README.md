@@ -41,10 +41,10 @@ include(summary.cmake)
 
 When you write unicode chars (e.g. Chinese characters) in utf-8 encoding source files (.c/.cpp/.h/.hpp), and your command prompt use encodings like `/cp936` (due to OS language), it prints garbage. You may avoid that by specify encoding for source files and execution, separately. 
 
-Here is the tool you can use, just download [windows_encoding.cmake](windows_encoding.cmake) (and also [QueryCodePage.py](QueryCodePage.py) if your cmake < 3.24), and only add one line in CMakeLists.txt
+Here is the tool you can use, just download [msvc_utf8_encoding.cmake](msvc_utf8_encoding.cmake) (and also [QueryCodePage.py](QueryCodePage.py) if your cmake < 3.24), and only add one line in CMakeLists.txt
 
 ```cmake
-include(windows_encoding.cmake)
+include(msvc_utf8_encoding.cmake)
 ```
 
 ## msvc_static_crt.cmake
