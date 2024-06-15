@@ -6,7 +6,7 @@ include_guard()
 
 add_compile_options(
   "$<$<COMPILE_LANG_AND_ID:C,MSVC>:/Zi>"
-  "$<$<COMPILE_LANG_AND_ID:CXX,GNU,Clang,AppleClang>:-g>"
+  "$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/Zi>"
 
   "$<$<COMPILE_LANG_AND_ID:C,GNU,Clang,AppleClang>:-g>"
   "$<$<COMPILE_LANG_AND_ID:CXX,GNU,Clang,AppleClang>:-g>"
