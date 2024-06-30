@@ -1,12 +1,12 @@
 # Author: Zhuo Zhang <imzhuo@foxmail.com>
 # Homepage: https://github.com/zchrissirhcz/cmake_tools
-# Last update: 2024-05-26 23:30:00
+# Last update: 2024-06-30 13:08 :00
 cmake_minimum_required(VERSION 3.15)
 include_guard()
 
 # Scenario:
-# - build an library `hello` with VS2019 >= 16.3 (or VS2022), which uses Frame Handler 4 on default
-# - link this library `hello` in VS2017/VS2015, or VS2019 < 16.3, which uses Frame Handler 4 on default
+# - build an library `hello` with VS2019 >= 16.3 (or VS2022), which uses Frame Handler 4 on default (`__CxxFrameHandler4`)
+# - link this library `hello` in VS2017/VS2015, or VS2019 < 16.3, which uses Frame Handler 3 on default (`__CxxFrameHandler3`)
 # - then comes link error: unresolved external symbol __CxxFrameHandler4
 # For a full example, see https://github.com/zchrissirhcz/min-repros/tree/master/test_GS_EHsc_link_error
 #
