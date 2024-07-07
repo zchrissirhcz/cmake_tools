@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.25)
+project(test_asan)
+include(../../asan.cmake)
+add_executable(double_free_test double_free_test.cpp)
+# add_executable(invalid_memory_read_test invalid_memory_read_test.cpp)
+# add_executable(invalid_memory_write_test invalid_memory_write_test.cpp)

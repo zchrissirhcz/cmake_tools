@@ -1,6 +1,6 @@
 # Author: Zhuo Zhang <imzhuo@foxmail.com>
 # Homepage: https://github.com/zchrissirhcz/cmake_tools
-# Last update: 2024-06-12 00:00:00
+# Last update: 2024-07-07 21:14:00
 cmake_minimum_required(VERSION 3.15)
 include_guard()
 
@@ -21,7 +21,7 @@ if((CMAKE_C_COMPILER_ID STREQUAL "MSVC") OR (CMAKE_CXX_COMPILER_ID STREQUAL "MSV
     message(WARNING "VS2019 x64 ASAN requires VS >= 16.7, please update VS")
     set(ASAN_AVAILABLE OFF)
   else()
-    set(ASAN_OPTIONS /fsanitize=address)
+    set(ASAN_OPTIONS /fsanitize=address /Zi)
   endif()
 elseif(MSVC AND ((CMAKE_C_COMPILER_ID STREQUAL "Clang") OR (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")))
   message(WARNING "Clang-CL not support setup AddressSanitizer via CMakeLists.txt")
@@ -77,6 +77,6 @@ endif()
 
 # per-target
 # https://developer.android.com/ndk/guides/asan?hl=zh-cn#cmake
-# target_compile_options(${TARGET} PUBLIC -fsanitize=address -fno-omit-frame-pointer)
-# set_target_properties(${TARGET} PROPERTIES LINK_FLAGS -fsanitize=address) # not working for INTERFACE targets
+# target_compile_options(${TARGET} PUBLIC -fsanitize=address -fno-omit-frame-pointer -g)
+# set_target_properties(${TARGET} PROPERTIES LINK_FLAGS -fsanitize=address) # for non-INTERFACE targets
 # target_link_options(${TARGET} INTERFACE -fsanitize=address) # for INTERFACE targets
