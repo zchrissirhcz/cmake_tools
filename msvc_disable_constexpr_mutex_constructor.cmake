@@ -46,6 +46,8 @@ include_guard()
 # https://github.com/microsoft/STL/issues/2285
 # https://github.com/microsoft/STL/wiki/Changelog#vs-2022-1710
 # https://stackoverflow.com/questions/78598141/first-stdmutexlock-crashes-in-application-built-with-latest-visual-studio/78599923#78599923
+# https://learn.microsoft.com/en-us/cpp/windows/redistributing-visual-cpp-files?view=msvc-170
+# https://learn.microsoft.com/en-us/cpp/windows/determining-which-dlls-to-redistribute?view=msvc-170
 if((CMAKE_CXX_COMPILER_ID STREQUAL "MSVC") AND (CMAKE_CXX_COMPILER_VERSION STRGREATER_EQUAL 17.10))
   set(DLL_PATH "C:/Windows/System32/msvcp140.dll")
 
