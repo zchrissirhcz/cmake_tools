@@ -49,7 +49,7 @@ endif()
 # If `-w` specified for GCC/Clang, report an error
 if((CMAKE_C_COMPILER_ID MATCHES "GNU") OR (CMAKE_C_COMPILER_ID MATCHES "Clang"))
   get_directory_property(overlook_detected_global_compile_options COMPILE_OPTIONS)
-  overlook_echo("Detected Global Compile Options: ${overlook_detected_global_compile_options}")
+  message("Detected Global Compile Options: ${overlook_detected_global_compile_options}")
   string(REGEX MATCH "-w" ignore_all_warnings "${overlook_detected_global_compile_options}" )
   if(ignore_all_warnings)
     overlook_error("Found `-w` compile options, it ignore all warnings. Please remove it (in `add_compile_options)`")
@@ -372,6 +372,43 @@ elseif(CMAKE_C_COMPILER_ID MATCHES "Clang")
   list(APPEND OVERLOOK_CXX_COMPILE_OPTIONS -Werror=multichar)
 endif()
 
+#--------------------------------------------------------------------------------
+# Type safe related
+#--------------------------------------------------------------------------------
+# rule9: 避免把 unsigned int 和 int 直接比较
+# 通常会误伤，例如 for 循环中。可以考虑关掉
+if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
+  list(APPEND OVERLOOK_C_COMPILE_OPTIONS /we4018)
+  list(APPEND OVERLOOK_CXX_COMPILE_OPTIONS /we4018)
+elseif(CMAKE_C_COMPILER_ID MATCHES "GNU")
+  list(APPEND OVERLOOK_C_COMPILE_OPTIONS -Werror=sign-compare)
+  list(APPEND OVERLOOK_CXX_COMPILE_OPTIONS -Werror=sign-compare)
+elseif(CMAKE_C_COMPILER_ID MATCHES "Clang")
+  list(APPEND OVERLOOK_C_COMPILE_OPTIONS -Werror=sign-compare)
+  list(APPEND OVERLOOK_CXX_COMPILE_OPTIONS -Werror=sign-compare)
+endif()
+
+# rule20: size_t 类型被转为更窄类型
+# VC/VC++ 特有。 Linux 下的 gcc/clang 没有
+if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
+  list(APPEND OVERLOOK_C_COMPILE_OPTIONS /we4267)
+  list(APPEND OVERLOOK_CXX_COMPILE_OPTIONS /we4267)
+endif()
+
+## rule34: double 型转 float 型，可能有精度丢失（尤其在 float 较大时）
+# MSVC 默认是放在 /W3
+if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
+  list(APPEND OVERLOOK_C_COMPILE_OPTIONS /we4244)
+  list(APPEND OVERLOOK_CXX_COMPILE_OPTIONS /we4244)
+endif()
+
+## rule37: float 转换隐式转换为 int，可能改变变量的值
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+  list(APPEND OVERLOOK_CXX_COMPILE_OPTIONS -Werror=float-conversion)
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  list(APPEND OVERLOOK_CXX_COMPILE_OPTIONS  -Werror=float-conversion)
+endif()
+
 
 #--------------------------------------------------------------------------------
 # Misc
@@ -406,50 +443,14 @@ elseif((CMAKE_C_COMPILER_ID MATCHES "Clang") OR (CMAKE_CXX_COMPILER_ID MATCHES "
   list(APPEND OVERLOOK_CXX_COMPILE_OPTIONS  -Werror=implicit-fallthrough)
 endif()
 
-
-#--------------------------------------------------------------------------------
-# Usually false positive type casting/conversions
-#--------------------------------------------------------------------------------
-
-if (0)
-  # rule5: 避免使用影子(shadow)变量
-  # 有时候会误伤, 例如eigen等开源项目, 可以手动关掉
-  if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
-    list(APPEND OVERLOOK_C_COMPILE_OPTIONS /we6244 /we6246 /we4457 /we4456)
-    list(APPEND OVERLOOK_CXX_COMPILE_OPTIONS /we6244 /we6246 /we4457 /we4456)
-  else()
-    list(APPEND OVERLOOK_C_COMPILE_OPTIONS -Werror=shadow)
-    list(APPEND OVERLOOK_CXX_COMPILE_OPTIONS -Werror=shadow)
-  endif()
-
-  # rule9: 避免把 unsigned int 和 int 直接比较
-  # 通常会误伤，例如 for 循环中。可以考虑关掉
-  if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
-    list(APPEND OVERLOOK_C_COMPILE_OPTIONS /we4018)
-    list(APPEND OVERLOOK_CXX_COMPILE_OPTIONS /we4018)
-  elseif(CMAKE_C_COMPILER_ID MATCHES "GNU")
-    list(APPEND OVERLOOK_C_COMPILE_OPTIONS -Werror=sign-compare)
-    list(APPEND OVERLOOK_CXX_COMPILE_OPTIONS -Werror=sign-compare)
-  elseif(CMAKE_C_COMPILER_ID MATCHES "Clang")
-    list(APPEND OVERLOOK_C_COMPILE_OPTIONS -Werror=sign-compare)
-    list(APPEND OVERLOOK_CXX_COMPILE_OPTIONS -Werror=sign-compare)
-  endif()
-
-  # rule20: size_t 类型被转为更窄类型
-  # VC/VC++ 特有。 Linux 下的 gcc/clang 没有
-  # 有点过于严格了
-  if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
-    list(APPEND OVERLOOK_C_COMPILE_OPTIONS /we4267)
-    list(APPEND OVERLOOK_CXX_COMPILE_OPTIONS /we4267)
-  endif()
-
-  ## rule34: double 型转 float 型，可能有精度丢失（尤其在 float 较大时）
-  # MSVC 默认是放在 /W3
-  if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
-    list(APPEND OVERLOOK_C_COMPILE_OPTIONS /we4244)
-    list(APPEND OVERLOOK_CXX_COMPILE_OPTIONS /we4244)
-  endif()
-
+# rule5: 避免使用影子(shadow)变量
+# 有时候会误伤, 例如eigen等开源项目, 可以手动关掉
+if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
+  list(APPEND OVERLOOK_C_COMPILE_OPTIONS /we6244 /we6246 /we4457 /we4456)
+  list(APPEND OVERLOOK_CXX_COMPILE_OPTIONS /we6244 /we6246 /we4457 /we4456)
+else()
+  list(APPEND OVERLOOK_C_COMPILE_OPTIONS -Werror=shadow)
+  list(APPEND OVERLOOK_CXX_COMPILE_OPTIONS -Werror=shadow)
 endif()
 
 
