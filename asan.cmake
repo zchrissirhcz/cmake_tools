@@ -62,6 +62,7 @@ if(ASAN_AVAILABLE)
     # https://devblogs.microsoft.com/cppblog/msvc-address-sanitizer-one-dll-for-all-runtime-configurations/
     if((CMAKE_C_COMPILER_VERSION STRGREATER_EQUAL 17.7) OR (CMAKE_CXX_COMPILER_VERSION STRGREATER_EQUAL 17.7))
       if(CMAKE_GENERATOR MATCHES "Visual Studio") # for running/debugging in Visual Studio
+        cmake_minimum_required(VERSION 3.27)
         if(CMAKE_GENERATOR_PLATFORM MATCHES "x64" OR CMAKE_SIZEOF_VOID_P EQUAL 8)
           set(CMAKE_VS_DEBUGGER_ENVIRONMENT "PATH=$(VC_ExecutablePath_x64);%PATH%")
         elseif (CMAKE_GENERATOR_PLATFORM MATCHES "Win32" OR CMAKE_SIZEOF_VOID_P EQUAL 4)
