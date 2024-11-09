@@ -1,11 +1,12 @@
 # Author: Zhuo Zhang <imzhuo@foxmail.com>
 # Homepage: https://github.com/zchrissirhcz/cmake_tools
-# Last update: 2024-07-07 21:14:00
+# Last update: 2024-11-09 12:37:00
 cmake_minimum_required(VERSION 3.15)
 include_guard()
 
 option(VS2022_ASAN_DISABLE_VECTOR_ANNOTATION "Disable string annotation for VS2022 ASan?" ON)
 option(VS2022_ASAN_DISABLE_STRING_ANNOTATION "Disable vector annotation for VS2022 ASan?" ON)
+option(COPY_ASAN_DLLS "Copy ASan DLLs to binary directory?" OFF)
 
 # globally
 # https://stackoverflow.com/a/65019152/2999096
@@ -60,10 +61,28 @@ if(ASAN_AVAILABLE)
 
     # https://devblogs.microsoft.com/cppblog/msvc-address-sanitizer-one-dll-for-all-runtime-configurations/
     if((CMAKE_C_COMPILER_VERSION STRGREATER_EQUAL 17.7) OR (CMAKE_CXX_COMPILER_VERSION STRGREATER_EQUAL 17.7))
-      if(CMAKE_GENERATOR_PLATFORM MATCHES "x64" OR CMAKE_SIZEOF_VOID_P EQUAL 8)
-        set(CMAKE_VS_DEBUGGER_ENVIRONMENT "PATH=$(VC_ExecutablePath_x64);%PATH%")
-      elseif (CMAKE_GENERATOR_PLATFORM MATCHES "Win32" OR CMAKE_SIZEOF_VOID_P EQUAL 4)
-        set(CMAKE_VS_DEBUGGER_ENVIRONMENT "PATH=$(VC_ExecutablePath_x86);%PATH%")
+      if(CMAKE_GENERATOR MATCHES "Visual Studio") # for running/debugging in Visual Studio
+        if(CMAKE_GENERATOR_PLATFORM MATCHES "x64" OR CMAKE_SIZEOF_VOID_P EQUAL 8)
+          set(CMAKE_VS_DEBUGGER_ENVIRONMENT "PATH=$(VC_ExecutablePath_x64);%PATH%")
+        elseif (CMAKE_GENERATOR_PLATFORM MATCHES "Win32" OR CMAKE_SIZEOF_VOID_P EQUAL 4)
+          set(CMAKE_VS_DEBUGGER_ENVIRONMENT "PATH=$(VC_ExecutablePath_x86);%PATH%")
+        endif()
+      endif()
+
+      if((CMAKE_GENERATOR MATCHES "Ninja") OR COPY_ASAN_DLLS)
+        get_filename_component(COMPILER_DIR ${CMAKE_CXX_COMPILER} DIRECTORY)
+        file(GLOB ASAN_DLLS "${COMPILER_DIR}/clang_rt.asan_dynamic*.dll")
+        foreach(ASAN_DLL ${ASAN_DLLS})
+          if(DEFINED CMAKE_CONFIGURATION_TYPES)
+            foreach(CONFIG_TYPE ${CMAKE_CONFIGURATION_TYPES})
+              file(COPY "${ASAN_DLL}" DESTINATION ${CMAKE_BINARY_DIR}/${CONFIG_TYPE})
+            endforeach()
+          else()
+            file(COPY "${ASAN_DLL}" DESTINATION ${CMAKE_BINARY_DIR})
+          endif()
+        endforeach()
+        unset(COMPILER_DIR)
+        unset(ASAN_DLLS)
       endif()
     endif()
 
