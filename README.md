@@ -4,6 +4,19 @@
 
 A set of cmake plugins for C/C++ building.
 
+## rocsetup.cmake
+
+Ease your cmake configure setup. e.g.
+
+```pwsh
+cmake -P rocsetup.cmake -p vs2022 -a x64
+```
+
+Will parse and then run:
+```pwsh
+cmake -S . -B build -G "Visual Studio 17 2022" -A x64
+```
+
 ## asan.cmake
 
 Enable Address Sanitizer globally in your CMake-based project, by download [asan.cmake](asan.cmake) and only add one line in CMakeLists.txt
