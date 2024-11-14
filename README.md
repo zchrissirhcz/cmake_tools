@@ -1,6 +1,6 @@
-# CMake Tools
+# RocBuild
 
-<img alt="GitHub" src="https://img.shields.io/github/license/zchrissirhcz/cmake_tools"> ![Ubuntu](https://img.shields.io/badge/Ubuntu-333333?style=flat&logo=ubuntu) ![Windows](https://img.shields.io/badge/Windows-333333?style=flat&logo=windows&logoColor=blue) ![macOS](https://img.shields.io/badge/-macOS-333333?style=flat&logo=apple) ![android](https://img.shields.io/badge/-Android-333333?style=flat&logo=Android)
+<img alt="GitHub" src="https://img.shields.io/github/license/zchrissirhcz/RocBuild"> ![Ubuntu](https://img.shields.io/badge/Ubuntu-333333?style=flat&logo=ubuntu) ![Windows](https://img.shields.io/badge/Windows-333333?style=flat&logo=windows&logoColor=blue) ![macOS](https://img.shields.io/badge/-macOS-333333?style=flat&logo=apple) ![android](https://img.shields.io/badge/-Android-333333?style=flat&logo=Android)
 
 A set of cmake plugins for C/C++ building.
 
@@ -53,6 +53,3 @@ Switch to MT/MTd globally, by download [msvc_static_crt.cmake](msvc_static_crt.c
 ```cmake
 include(msvc_static_crt.cmake)
 ```
-
-
-[![Star History Chart](https://api.star-history.com/svg?repos=zchrissirhcz/cmake_tools&type=Date)](https://star-history.com/#zchrissirhcz/cmake_tools&Date)

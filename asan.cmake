@@ -1,5 +1,5 @@
 # Author: Zhuo Zhang <imzhuo@foxmail.com>
-# Homepage: https://github.com/zchrissirhcz/cmake_tools
+# Homepage: https://github.com/zchrissirhcz/rocbuild
 # Last update: 2024-11-09 12:37:00
 cmake_minimum_required(VERSION 3.15)
 include_guard()

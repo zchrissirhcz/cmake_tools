@@ -3,7 +3,7 @@
 # Overlook: a cmake plugin for safer c/c++ programming.
 #
 # Author:   Zhuo Zhang <imzhuo@foxmail.com>
-# Homepage: https://github.com/zchrissirhcz/cmake_tools
+# Homepage: https://github.com/zchrissirhcz/rocbuild
 #
 ###############################################################
 
@@ -22,7 +22,7 @@ set(OVERLOOK_CXX_COMPILE_OPTIONS)
 message("----------------------------------------------------------")
 message("  Overlook: a cmake tool for safer C/C++ programming      ")
 message("  Author  : Zhuo Zhang (imzhuo@foxmail.com)               ")
-message("  Homepage: https://github.com/zchrissirhcz/cmake_tools   ")
+message("  Homepage: https://github.com/zchrissirhcz/rocbuild   ")
 message("  Version : ${OVERLOOK_VERSION}                           ")
 message("----------------------------------------------------------")
 
