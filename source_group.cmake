@@ -1,10 +1,10 @@
 # Author: Zhuo Zhang <imzhuo@foxmail.com>
 # Homepage: https://github.com/zchrissirhcz/cmake_tools
-# Last update: 2024-05-26 23:30:00
+# Last update: 2024-11-14 23:10:00
 cmake_minimum_required(VERSION 3.15)
 include_guard()
 
-# --[ correctly show folder structure in Visual Studio
+# Show folder structure in Visual Studio / Xcode
 function(assign_source_group)
   foreach(_source IN ITEMS ${ARGN})
     if (IS_ABSOLUTE "${_source}")
@@ -16,20 +16,20 @@ function(assign_source_group)
     string(REPLACE "/" "\\" _source_path_msvc "${_source_path}")
     source_group("${_source_path_msvc}" FILES "${_source}")
   endforeach()
-endfunction(assign_source_group)
+endfunction()
 
 function(overlook_add_executable)
-  if (CMAKE_SYSTEM_NAME MATCHES "Windows" OR CMAKE_SYSTEM_NAME MATCHES "Darwin")
+  if(CMAKE_SYSTEM_NAME MATCHES "^(Windows|Darwin)$")
     foreach(_source IN ITEMS ${ARGN})
       assign_source_group(${_source})
     endforeach()
     #message("${ARGV}")
   endif ()
   add_executable(${ARGV})
-endfunction(overlook_add_executable)
+endfunction()
 
 function(overlook_cuda_add_executable)
-  if (CMAKE_SYSTEM_NAME MATCHES "Windows" OR CMAKE_SYSTEM_NAME MATCHES "Darwin")
+  if(CMAKE_SYSTEM_NAME MATCHES "^(Windows|Darwin)$")
     foreach(_source IN ITEMS ${ARGN})
       assign_source_group(${_source})
     endforeach()
@@ -39,21 +39,21 @@ function(overlook_cuda_add_executable)
 endfunction(overlook_cuda_add_executable)
 
 function(overlook_add_library)
-  if (CMAKE_SYSTEM_NAME MATCHES "Windows" OR CMAKE_SYSTEM_NAME MATCHES "Darwin")
+  if(CMAKE_SYSTEM_NAME MATCHES "^(Windows|Darwin)$")
     foreach(_source IN ITEMS ${ARGN})
       assign_source_group(${_source})
     endforeach()
     #message("${ARGV}")
   endif ()
   add_library(${ARGV})
-endfunction(overlook_add_library)
+endfunction()
 
 function(overlook_cuda_add_library)
-  if (CMAKE_SYSTEM_NAME MATCHES "Windows" OR CMAKE_SYSTEM_NAME MATCHES "Darwin")
+  if(CMAKE_SYSTEM_NAME MATCHES "^(Windows|Darwin)$")
     foreach(_source IN ITEMS ${ARGN})
       assign_source_group(${_source})
     endforeach()
     #message("${ARGV}")
   endif ()
   cuda_add_library(${ARGV})
-endfunction(overlook_cuda_add_library)
+endfunction()
